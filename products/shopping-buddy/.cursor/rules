@@ -1,0 +1,3 @@
+Only edit files under products/shopping-buddy/.
+Stack: Angular 17+, .NET 8 Web API, SQL Server, EF Core.
+Do not modify other products folders unless explicitly asked.

@@ -1,28 +1,43 @@
-# Angular specific
-/dist/
-/out-tsc/
-/tmp/
-/coverage/
-/e2e/test-output/
-/.angular/
-.angular/
-
-# Node modules and dependency files
-/node_modules/
-/package-lock.json
-/yarn.lock
-
-# Environment files
-/.env
-
-# Angular CLI and build artefacts
-/.angular-cli.json
-/.ng/
-
-# TypeScript cache
+# Angular
+**/dist/
+**/out-tsc/
+**/.angular/
+**/.angular/cache/
+**/coverage/
+**/.ng/
 *.tsbuildinfo
 
-# Logs
+# Node
+**/node_modules/
+**/package-lock.json
+**/yarn.lock
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# .NET
+**/bin/
+**/obj/
+**/publish/
+*.user
+**/.vs/
+*.DotSettings.user
+
+# Environment & secrets
+**/.env
+**/appsettings.*.local.json
+**/secrets.json
+
+# Reports & generated output
+**/Reports/
+**/logs/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*~
+
+# Azure local
+**/local.settings.json

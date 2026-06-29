@@ -1,0 +1,3 @@
+Only edit files under products/india-stock-report-agent/.
+Stack: .NET 8 Worker Service, Windows Service, Yahoo Finance, RSS feeds.
+Do not modify products/shopping-buddy or other product folders unless explicitly asked.
