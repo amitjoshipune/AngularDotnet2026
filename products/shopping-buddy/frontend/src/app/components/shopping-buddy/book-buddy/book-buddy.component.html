@@ -1,0 +1,114 @@
+<div class="mb-4" *ngIf="!confirmation">
+  <a routerLink="/shopping/find" class="btn btn-link btn-lg ps-0 text-decoration-none">&larr; Back to search</a>
+  <h1 class="h2 fw-bold mb-1">Book {{ buddy?.displayName }}</h1>
+  <p class="text-muted buddy-subtitle">Review safety rules before confirming. All meetings happen at public venues only.</p>
+</div>
+
+<div *ngIf="confirmation" class="card border-success shadow-sm buddy-confirm-card">
+  <div class="card-body p-4 p-md-5 text-center">
+    <div class="buddy-confirm-icon mb-3">✓</div>
+    <h2 class="h3 text-success mb-3">Booking confirmed (demo)</h2>
+    <p class="buddy-subtitle mb-4">
+      Your trip with <strong>{{ confirmation.buddyName }}</strong> at
+      <strong>{{ confirmation.venueName }}</strong>, {{ confirmation.localityName }} is reserved.
+    </p>
+    <dl class="row justify-content-center buddy-confirm-details text-start mx-auto">
+      <dt class="col-sm-4">Booking ID</dt>
+      <dd class="col-sm-8">{{ confirmation.bookingId }}</dd>
+      <dt class="col-sm-4">Date &amp; time</dt>
+      <dd class="col-sm-8">{{ confirmation.date }} · {{ confirmation.timeSlot }}</dd>
+      <dt class="col-sm-4">Safety PIN</dt>
+      <dd class="col-sm-8"><code class="fs-5">{{ confirmation.safetyPin }}</code> — share with family only</dd>
+      <dt class="col-sm-4">Emergency alert</dt>
+      <dd class="col-sm-8">{{ confirmation.emergencyContact }}</dd>
+    </dl>
+    <a routerLink="/shopping/find" class="btn btn-primary btn-lg mt-3">Find another buddy</a>
+  </div>
+</div>
+
+<div class="row g-4" *ngIf="buddy && !confirmation">
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body p-4">
+        <h2 class="h5 mb-3">Buddy profile</h2>
+        <p class="buddy-bio mb-2">{{ buddy.bio }}</p>
+        <p class="text-muted buddy-meta mb-0">
+          {{ localityName(buddy.localityId) }} · ★ {{ buddy.rating }} · {{ buddy.completedTrips }} completed trips
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <div class="mb-3">
+            <label class="form-label buddy-label" for="venue">Meeting venue (public only)</label>
+            <select id="venue" class="form-select form-select-lg" formControlName="venueId">
+              <option value="">Select mall or market</option>
+              <option *ngFor="let venue of venues" [value]="venue.id">{{ venue.name }}</option>
+            </select>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label buddy-label" for="date">Date</label>
+              <input id="date" type="date" class="form-control form-control-lg" formControlName="date" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label buddy-label" for="timeSlot">Time slot</label>
+              <select id="timeSlot" class="form-select form-select-lg" formControlName="timeSlot">
+                <option value="">Choose a slot</option>
+                <option *ngFor="let slot of timeSlots" [value]="slot">{{ slot }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label buddy-label" for="activityType">Trip type</label>
+            <select id="activityType" class="form-select form-select-lg" formControlName="activityType">
+              <option *ngFor="let type of buddy.activityTypes" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label buddy-label" for="notes">Notes for buddy (optional)</label>
+            <textarea
+              id="notes"
+              class="form-control form-control-lg"
+              rows="3"
+              formControlName="notes"
+              placeholder="e.g. Need help with saree shopping and carrying bags"
+            ></textarea>
+          </div>
+
+          <div class="buddy-safety-box p-3 rounded-3 mb-3">
+            <h3 class="h6 mb-2">Safety rules — please read</h3>
+            <ul class="mb-3">
+              <li *ngFor="let rule of safetyRules">{{ rule }}</li>
+            </ul>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="acceptedSafetyRules" formControlName="acceptedSafetyRules" />
+              <label class="form-check-label buddy-label" for="acceptedSafetyRules">
+                I accept these rules and understand this is shopping companionship only
+              </label>
+            </div>
+          </div>
+
+          <div class="form-check form-switch mb-4">
+            <input class="form-check-input" type="checkbox" id="shareLiveLocation" formControlName="shareLiveLocation" />
+            <label class="form-check-label buddy-label" for="shareLiveLocation">
+              Share live location with my emergency contact during the trip
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="isSubmitting">
+            <span *ngIf="!isSubmitting">Confirm booking</span>
+            <span *ngIf="isSubmitting">Confirming...</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

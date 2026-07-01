@@ -9,7 +9,7 @@ Each product lives in its own folder under `products/`. Nothing here overwrites 
 | Product | Folder | Stack | Status |
 |---------|--------|-------|--------|
 | India Stock Report Agent | [`products/india-stock-report-agent`](products/india-stock-report-agent) | .NET 8 Windows Service | Active |
-| ShoppingBuddy | _planned_ `products/shopping-buddy` | Angular + .NET 8 + SQL | In angular15apps or separate branch |
+| ShoppingBuddy | [`products/shopping-buddy`](products/shopping-buddy) | Angular 15 + .NET 8 API | In progress (migrated from angular15apps) |
 | _Product 3–5_ | `products/<name>` | Per product | Pipeline |
 
 ## Quick start
@@ -18,6 +18,11 @@ Each product lives in its own folder under `products/`. Nothing here overwrites 
 # India Stock Report Agent
 cd products/india-stock-report-agent
 dotnet run
+
+# ShoppingBuddy (frontend)
+cd products/shopping-buddy/frontend
+npm install
+npm start
 ```
 
 ## Repository layout
@@ -26,10 +31,11 @@ dotnet run
 AngularDotnet2026/
 ├── docs/                          # Cross-product guides (branching, Azure, VC demos)
 ├── products/                      # One folder per product — never mix code between these
-│   └── india-stock-report-agent/
-│       ├── IndiaStockReportAgent.csproj
-│       ├── Services/
-│       └── README.md
+│   ├── india-stock-report-agent/
+│   └── shopping-buddy/
+│       ├── frontend/          # Angular
+│       ├── backend/AuthApi/   # .NET 8 Web API
+│       └── docs/
 ├── templates/                     # Scaffolds for new Angular + .NET products
 └── README.md
 ```

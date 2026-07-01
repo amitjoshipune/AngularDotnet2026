@@ -1,0 +1,15 @@
+<div class="dashboard-page">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <p class="text-uppercase text-muted small mb-1">Manager home</p>
+      <h1 class="h3 mb-0">Hello, {{ auth.getCurrentUser()?.displayName }}</h1>
+    </div>
+  </div>
+
+  <div class="card dashboard-tile">
+    <div class="card-body">
+      <h2 class="h5">Manager workspace</h2>
+      <p class="text-muted mb-0">Managers can review items and coordinate with testers.</p>
+    </div>
+  </div>
+</div>

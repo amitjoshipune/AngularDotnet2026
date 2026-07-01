@@ -1,0 +1,61 @@
+.buddy-hero {
+  background: linear-gradient(135deg, #fdf2f8 0%, #eef2ff 55%, #f0fdf4 100%);
+}
+
+.buddy-badge {
+  background: #831843;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.85rem;
+}
+
+.buddy-lead {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: #334155;
+}
+
+.buddy-trust-panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+}
+
+.buddy-trust-list {
+  list-style: none;
+  padding: 0;
+}
+
+.buddy-trust-list li {
+  padding: 0.55rem 0 0.55rem 1.75rem;
+  position: relative;
+  font-size: 1.05rem;
+}
+
+.buddy-trust-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #059669;
+  font-weight: 700;
+}
+
+.buddy-step-num {
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #fff;
+  background: linear-gradient(135deg, #be185d, #7c3aed);
+}
+
+.buddy-step-card h3 {
+  font-size: 1.2rem;
+}
+
+.buddy-step-card p {
+  font-size: 1rem;
+  line-height: 1.55;
+}

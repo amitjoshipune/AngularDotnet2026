@@ -1,0 +1,85 @@
+<div class="mb-4">
+  <a routerLink="/shopping" class="btn btn-link btn-lg ps-0 text-decoration-none">&larr; Back to home</a>
+  <h1 class="h2 fw-bold mb-1">Safety, legal &amp; trust</h1>
+  <p class="text-muted legal-lead">
+    BookMyShoppingBuddy is designed to reduce social, moral, and legal risk — not create it.
+    This page summarizes the product intent. It is <strong>not legal advice</strong>; consult a qualified
+    Indian advocate before commercial launch.
+  </p>
+</div>
+
+<div class="alert alert-info legal-alert">
+  <strong>Platform position:</strong> We are an intermediary connecting verified women for short,
+  public shopping trips. We do not offer dating, transport, domestic work, escort services, or private meetings.
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="h4 mb-3">Identity &amp; account controls</h2>
+        <ol class="legal-list">
+          <li *ngFor="let step of verificationSteps">
+            <strong>{{ step.title }}</strong> — {{ step.detail }}
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="h4 mb-3">Community safety rules</h2>
+        <ul class="legal-list">
+          <li *ngFor="let rule of safetyRules">{{ rule }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body p-4">
+    <h2 class="h4 mb-3">Indian law checklist (pre-launch)</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered legal-table align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Area</th>
+            <th>Why it matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IT Act 2000 &amp; Intermediary Guidelines</td>
+            <td>Platform liability, content takedown, grievance officer within 24 hours</td>
+          </tr>
+          <tr>
+            <td>DPDP Act 2023</td>
+            <td>Consent, purpose limitation, and secure storage of Aadhaar and location data</td>
+          </tr>
+          <tr>
+            <td>Consumer Protection Act</td>
+            <td>Clear refund policy for subscription or booking fees</td>
+          </tr>
+          <tr>
+            <td>IPC / BNS harassment provisions</td>
+            <td>Zero tolerance messaging; audit logs for law enforcement requests</td>
+          </tr>
+          <tr>
+            <td>Google Play &amp; app store policies</td>
+            <td>User-generated content, location, and identity permissions declared accurately</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-muted mb-0 legal-note">
+      See also <code>docs/legal-considerations.md</code> and <code>docs/faq.md</code> in this repository.
+    </p>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap gap-3">
+  <a routerLink="/shopping/find" class="btn btn-primary btn-lg">Find a buddy</a>
+  <a routerLink="/login" class="btn btn-outline-secondary btn-lg">Sign in</a>
+</div>

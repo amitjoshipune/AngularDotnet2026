@@ -1,0 +1,12 @@
+.app-navbar {
+  background: linear-gradient(90deg, #1e3a8a, #4338ca);
+}
+
+.app-main {
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+main:not(.app-main) {
+  min-height: 100vh;
+}

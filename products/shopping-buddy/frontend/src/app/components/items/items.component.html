@@ -1,0 +1,78 @@
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h2 class="h5 mb-1">Items</h2>
+        <p class="text-muted mb-0">Protected CRUD demo backed by the .NET API.</p>
+      </div>
+      <span class="badge bg-primary">Secure API</span>
+    </div>
+
+    <div *ngIf="message" class="alert alert-info py-2">{{ message }}</div>
+
+    <div class="row g-3">
+      <div class="col-lg-4">
+        <div class="card border-0 bg-light">
+          <div class="card-body">
+            <h3 class="h6">{{ editingId ? 'Edit item' : 'Create item' }}</h3>
+            <form [formGroup]="form" (ngSubmit)="submit()">
+              <div class="mb-2">
+                <label class="form-label">Name</label>
+                <input class="form-control" formControlName="name" />
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Category</label>
+                <input class="form-control" formControlName="category" />
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Status</label>
+                <select class="form-select" formControlName="status">
+                  <option value="Active">Active</option>
+                  <option value="Review">Review</option>
+                  <option value="Done">Done</option>
+                </select>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-primary" type="submit" [disabled]="isSubmitting">{{ editingId ? 'Update' : 'Create' }}</button>
+                <button class="btn btn-outline-secondary" type="button" (click)="cancelEdit()" *ngIf="editingId">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="input-group mb-3">
+          <input class="form-control" [(ngModel)]="searchTerm" placeholder="Search by name or category" />
+          <button class="btn btn-outline-secondary" type="button" (click)="search()">Search</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of items">
+                <td>{{ item.name }}</td>
+                <td>{{ item.category }}</td>
+                <td><span class="badge bg-secondary">{{ item.status }}</span></td>
+                <td>{{ item.createdAt | date:'short' }}</td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary me-2" (click)="startEdit(item)">Edit</button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteItem(item.id)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="dashboard-page">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <p class="text-uppercase text-muted small mb-1">Tester home</p>
+      <h1 class="h3 mb-0">Welcome, {{ auth.getCurrentUser()?.displayName }}</h1>
+    </div>
+  </div>
+
+  <div class="card dashboard-tile">
+    <div class="card-body">
+      <h2 class="h5">Your workspace</h2>
+      <p class="text-muted mb-0">
+        You are signed in as <strong>{{ auth.getCurrentUser()?.email }}</strong>.
+        Protected routes stay available until you sign out or the JWT expires.
+      </p>
+    </div>
+  </div>
+</div>
