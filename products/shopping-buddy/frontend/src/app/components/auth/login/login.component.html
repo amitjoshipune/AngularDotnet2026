@@ -1,0 +1,75 @@
+<div class="login-page">
+  <div class="login-card card shadow-lg border-0">
+    <div class="card-body p-4 p-md-5">
+      <div class="text-center mb-4">
+        <div class="login-logo mb-3">SB</div>
+        <h1 class="h3 mb-1">BookMyShoppingBuddy</h1>
+        <p class="text-muted mb-0">Sign in to find a verified shopping companion in Pune</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger py-2" role="alert">
+        {{ errorMessage }}
+      </div>
+
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            class="form-control form-control-lg"
+            [(ngModel)]="email"
+            required
+            autocomplete="username"
+            placeholder="you@example.com"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="form-label">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            class="form-control form-control-lg"
+            [(ngModel)]="password"
+            required
+            autocomplete="current-password"
+            placeholder="Enter your password"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg w-100"
+          [disabled]="isSubmitting || loginForm.invalid"
+        >
+          <span *ngIf="!isSubmitting">Sign in</span>
+          <span *ngIf="isSubmitting">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Signing in...
+          </span>
+        </button>
+      </form>
+
+      <hr class="my-4" />
+
+      <p class="text-center mb-2">
+        <a routerLink="/shopping/safety" class="small">Safety &amp; legal information</a>
+      </p>
+
+      <p class="small text-muted text-center mb-2">Demo accounts (real .NET API)</p>
+      <div class="d-grid gap-2">
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm"
+          *ngFor="let account of demoAccounts"
+          (click)="fillDemo(account)"
+        >
+          Use {{ account.label }} — {{ account.email }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

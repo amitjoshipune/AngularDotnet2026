@@ -1,0 +1,33 @@
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar" *ngIf="showNavbar()">
+  <div class="container">
+    <a class="navbar-brand fw-semibold" [routerLink]="auth.isAuthenticated() ? '/shopping' : '/shopping/safety'">
+      BookMyShoppingBuddy
+    </a>
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <ng-container *ngIf="auth.isAuthenticated()">
+        <a class="nav-link text-white-50" routerLink="/shopping">Home</a>
+        <a class="nav-link text-white-50" routerLink="/shopping/find">Find buddy</a>
+        <a class="nav-link text-white-50" routerLink="/shopping/safety">Safety</a>
+        <a class="nav-link text-white-50" *ngIf="isAdmin()" routerLink="/admin">Admin</a>
+        <a class="nav-link text-white-50" *ngIf="isTester()" routerLink="/tester">Tester</a>
+        <a class="nav-link text-white-50" *ngIf="isManager()" routerLink="/manager">Manager</a>
+        <a class="nav-link text-white-50" routerLink="/items">API demo</a>
+        <span class="navbar-text text-white-50 small d-none d-md-inline">
+          {{ auth.getCurrentUser()?.displayName }} ({{ auth.getUserRole() }})
+        </span>
+        <button type="button" class="btn btn-sm btn-outline-light" (click)="logout()">Sign out</button>
+      </ng-container>
+      <ng-container *ngIf="!auth.isAuthenticated()">
+        <a class="nav-link text-white-50" routerLink="/shopping/safety">Safety &amp; legal</a>
+        <a class="nav-link text-white-50" routerLink="/login">Sign in</a>
+      </ng-container>
+    </div>
+  </div>
+</nav>
+
+<main
+  [class.app-main]="showNavbar()"
+  [class.container]="showNavbar()"
+>
+  <router-outlet></router-outlet>
+</main>

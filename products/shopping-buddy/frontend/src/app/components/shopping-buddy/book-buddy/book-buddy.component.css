@@ -1,0 +1,60 @@
+.buddy-label {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.buddy-subtitle {
+  font-size: 1.05rem;
+}
+
+.buddy-bio {
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.buddy-meta {
+  font-size: 1rem;
+}
+
+.buddy-safety-box {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+}
+
+.buddy-safety-box ul {
+  padding-left: 1.25rem;
+  margin-bottom: 0;
+}
+
+.buddy-safety-box li {
+  font-size: 1rem;
+  line-height: 1.55;
+  margin-bottom: 0.35rem;
+}
+
+.buddy-confirm-card {
+  max-width: 720px;
+  margin: 2rem auto;
+}
+
+.buddy-confirm-icon {
+  width: 4rem;
+  height: 4rem;
+  margin-inline: auto;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  background: #059669;
+}
+
+.buddy-confirm-details {
+  max-width: 520px;
+  font-size: 1.05rem;
+}
+
+.buddy-confirm-details dt {
+  font-weight: 600;
+}
