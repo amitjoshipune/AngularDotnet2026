@@ -67,7 +67,28 @@
   <div class="col-md-6 col-xl-4" *ngFor="let buddy of buddies">
     <article class="card h-100 shadow-sm border-0 buddy-card">
       <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-start mb-2">
+        <div class="d-flex gap-3 align-items-start mb-3" *ngIf="buddy.avatarUrl">
+          <img
+            [src]="buddy.avatarUrl"
+            [alt]="buddy.displayName"
+            class="rounded-circle buddy-avatar"
+            width="64"
+            height="64"
+          />
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h2 class="h4 mb-1">{{ buddy.displayName }}</h2>
+                <p class="text-muted mb-0 buddy-meta">Age {{ buddy.age }} · {{ localityName(buddy.localityId) }}</p>
+              </div>
+              <span class="badge rounded-pill" [ngClass]="verificationClass(buddy.verificationLevel)">
+                {{ verificationLabel(buddy.verificationLevel) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-start mb-2" *ngIf="!buddy.avatarUrl">
           <div>
             <h2 class="h4 mb-1">{{ buddy.displayName }}</h2>
             <p class="text-muted mb-0 buddy-meta">Age {{ buddy.age }} · {{ localityName(buddy.localityId) }}</p>

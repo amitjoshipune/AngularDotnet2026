@@ -1,5 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using AuthApi.Models;
+using AuthApi.Repositories;
+using AuthApi.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AuthApi.Controllers;
 
@@ -7,72 +9,49 @@ namespace AuthApi.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private static readonly List<AuthAccount> HardcodedUsers = new()
+    private readonly IUserRepository _users;
+    private readonly JwtTokenService _jwtTokenService;
+
+    public AuthController(IUserRepository users, JwtTokenService jwtTokenService)
     {
-        new AuthAccount("1", "admin@example.com", "Admin@123", "Admin User", "Admin"),
-        new AuthAccount("2", "tester@example.com", "Tester@123", "Tester User", "Tester"),
-        new AuthAccount("3", "manager@example.com", "Manager@123", "Manager User", "Manager")
-    };
+        _users = users;
+        _jwtTokenService = jwtTokenService;
+    }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.email) || string.IsNullOrWhiteSpace(request.password))
         {
             return BadRequest(new { message = "Email and password are required." });
         }
 
-        var account = HardcodedUsers.FirstOrDefault(x =>
-            string.Equals(x.email, request.email.Trim(), StringComparison.OrdinalIgnoreCase) &&
-            x.password == request.password);
+        UserRecord? account;
+        try
+        {
+            account = await _users.FindByEmailAsync(request.email);
+        }
+        catch (Exception)
+        {
+            return StatusCode(503, new
+            {
+                message = "Database is unavailable. Run database/run-all.bat against SQLEXPRESS, then restart the API."
+            });
+        }
 
-        if (account is null)
+        if (account is null || account.Password != request.password)
         {
             return Unauthorized(new { message = "Invalid email or password." });
         }
 
-        var expiresIn = 3600;
-        var exp = DateTimeOffset.UtcNow.AddSeconds(expiresIn).ToUnixTimeSeconds();
-        var iat = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-        var jwtToken = CreateMockJwt(
-            sub: account.id,
-            email: account.email,
-            name: account.displayName,
-            role: account.role,
-            exp: exp,
-            iat: iat
-        );
-
-        var response = new LoginResponse
+        var user = new AuthUser
         {
-            accessToken = jwtToken,
-            refreshToken = $"refresh-{account.id}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}",
-            expiresIn = expiresIn,
-            user = new AuthUser
-            {
-                id = account.id,
-                email = account.email,
-                displayName = account.displayName,
-                role = account.role
-            }
+            id = account.UserId.ToString(),
+            email = account.Email,
+            displayName = account.DisplayName,
+            role = account.Role
         };
 
-        return Ok(response);
-    }
-
-    private static string CreateMockJwt(string sub, string email, string name, string role, long exp, long iat)
-    {
-        var header = Base64UrlEncode(System.Text.Json.JsonSerializer.Serialize(new { alg = "HS256", typ = "JWT" }));
-        var payload = Base64UrlEncode(System.Text.Json.JsonSerializer.Serialize(new { sub, email, name, role, exp, iat }));
-        var signature = "mock-signature";
-        return $"{header}.{payload}.{signature}";
-    }
-
-    private static string Base64UrlEncode(string input)
-    {
-        var data = System.Text.Encoding.UTF8.GetBytes(input);
-        var base64 = Convert.ToBase64String(data);
-        return base64.Replace("+", "-").Replace("/", "_").TrimEnd('=');
+        return Ok(_jwtTokenService.CreateLoginResponse(user));
     }
 }

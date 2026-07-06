@@ -47,6 +47,10 @@ export class AuthService {
   }
 
   getHomeRoute(): string {
+    const role = this.getUserRole();
+    if (role === 'Admin') {
+      return '/admin';
+    }
     return '/shopping';
   }
 

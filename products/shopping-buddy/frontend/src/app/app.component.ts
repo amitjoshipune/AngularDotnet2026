@@ -25,14 +25,6 @@ export class AppComponent {
     return this.auth.getUserRole() === 'Admin';
   }
 
-  isTester(): boolean {
-    return this.auth.getUserRole() === 'Tester';
-  }
-
-  isManager(): boolean {
-    return this.auth.getUserRole() === 'Manager';
-  }
-
   logout(): void {
     this.auth.logout();
     this.router.navigate(['/login']);

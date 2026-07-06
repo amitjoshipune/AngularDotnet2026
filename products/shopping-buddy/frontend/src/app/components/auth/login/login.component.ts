@@ -15,9 +15,10 @@ export class LoginComponent implements OnInit {
   returnUrl = '';
 
   readonly demoAccounts = [
+    { label: 'Customer (Sunita)', email: 'customer@demo.com', password: 'Customer@123' },
+    { label: 'Customer (Senior)', email: 'senior@demo.com', password: 'Senior@123' },
+    { label: 'Buddy (Meera)', email: 'meera@demo.com', password: 'Buddy@123' },
     { label: 'Admin', email: 'admin@example.com', password: 'Admin@123' },
-    { label: 'Tester', email: 'tester@example.com', password: 'Tester@123' },
-    { label: 'Manager', email: 'manager@example.com', password: 'Manager@123' },
   ];
 
   constructor(
@@ -56,7 +57,10 @@ export class LoginComponent implements OnInit {
         this.isSubmitting = false;
         const message = err?.error?.message || err?.message || '';
         if (err?.status === 0) {
-          this.errorMessage = 'The authentication API is currently unavailable. Please start the .NET API and try again.';
+          this.errorMessage =
+            'The authentication API is currently unavailable. Start AuthApi (dotnet run) and ensure the database scripts have been run.';
+        } else if (err?.status === 503) {
+          this.errorMessage = message || 'Database is unavailable. Run products/shopping-buddy/database/run-all.bat first.';
         } else if (message) {
           this.errorMessage = message;
         } else {

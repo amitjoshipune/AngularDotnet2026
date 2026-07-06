@@ -18,22 +18,35 @@ Migrated from [angular15apps `master`](https://github.com/amitjoshipune/angular1
 
 ## Quick start
 
-### Frontend
+### 1. Database (one-time)
 
-```bash
-cd products/shopping-buddy/frontend
-npm install
-npm start
+```bat
+cd products\shopping-buddy\database
+run-all.bat
 ```
 
-Open [http://localhost:4200/login](http://localhost:4200/login). Use a demo account, then explore **Find buddy** at `/shopping/find`.
+See [`database/README.md`](database/README.md) for SQL Express connection strings.
 
-### Backend (optional)
+### 2. Backend API
 
 ```bash
 cd products/shopping-buddy/backend/AuthApi
 dotnet run
 ```
+
+Swagger: http://localhost:5180/swagger
+
+### 3. Frontend
+
+```bash
+cd products/shopping-buddy/frontend
+npm install
+ng serve --port 4300
+```
+
+Open http://localhost:4300/login
+
+**Demo logins:** `customer@demo.com` / `Customer@123` · `admin@example.com` / `Admin@123`
 
 The Angular dev server proxies `/api` to `http://localhost:5180` via `frontend/proxy.conf.json`.
 
