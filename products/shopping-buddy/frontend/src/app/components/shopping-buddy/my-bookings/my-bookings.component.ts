@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BookingListItem, ShoppingBuddyService } from '../../core/services/shopping-buddy.service';
+import { BookingListItem, ShoppingBuddyService } from '../../../core/services/shopping-buddy.service';
 
 @Component({
   selector: 'app-my-bookings',
@@ -22,11 +22,11 @@ export class MyBookingsComponent implements OnInit {
     this.errorMessage = '';
 
     this.buddyService.getMyBookings().subscribe({
-      next: (items) => {
+      next: (items: BookingListItem[]) => {
         this.bookings = items;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: { error?: { message?: string } }) => {
         this.isLoading = false;
         this.errorMessage =
           err?.error?.message ||

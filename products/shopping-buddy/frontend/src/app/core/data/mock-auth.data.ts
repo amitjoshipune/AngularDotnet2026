@@ -5,7 +5,7 @@ interface MockAccount extends AuthUser {
   password: string;
 }
 
-/** Demo accounts — mirrors what a .NET Auth API would validate. */
+/** Demo accounts — used only when environment.useMockAuth is true. */
 export const MOCK_ACCOUNTS: MockAccount[] = [
   {
     id: '1',
@@ -16,10 +16,10 @@ export const MOCK_ACCOUNTS: MockAccount[] = [
   },
   {
     id: '2',
-    email: 'tester@example.com',
-    password: 'Tester@123',
-    displayName: 'Tester User',
-    role: 'Tester',
+    email: 'customer@demo.com',
+    password: 'Customer@123',
+    displayName: 'Sunita Patil',
+    role: 'Customer',
   },
 ];
 
