@@ -72,6 +72,46 @@ SELECT name, type_desc FROM sys.database_principals WHERE name LIKE 'sb_app%';
 
 Test read-only login in SSMS: connect with **SQL Server Authentication** as `sb_app_ro` — `SELECT` works, `INSERT` fails.
 
+## Troubleshooting SQL auth (Error 233)
+
+**Symptom:** Windows auth works; `sb_app_rw` / `sb_app_ro` fail with *Error 233 — No process is on the other end of the pipe*.
+
+**Cause (most common):** Mixed Mode not active yet, or login disabled / missing `CONNECT SQL`.
+
+### Fix (5 minutes)
+
+1. Connect with **Windows Authentication** in SSMS.
+2. Run `005_fix_sql_logins.sql` (diagnose + enable + reset passwords).
+3. Confirm mixed mode:
+
+```sql
+SELECT SERVERPROPERTY('IsIntegratedSecurityOnly') AS WindowsOnly;
+-- 0 = Mixed Mode OK   |   1 = still Windows-only
+```
+
+If `WindowsOnly = 1`:
+
+1. SQL Server Configuration Manager → **SQL Server (SQLEXPRESS)** → Properties → **Security** → **SQL Server and Windows Authentication mode**
+2. **Restart** SQLEXPRESS (not only SQL Server Browser)
+3. Re-run `005_fix_sql_logins.sql`
+
+### SSMS connect settings for SQL login
+
+| Field | Value |
+|-------|--------|
+| Server name | `DESKTOP-J5AN1SG\SQLEXPRESS` or `(local)\SQLEXPRESS` |
+| Authentication | **SQL Server Authentication** (not Windows) |
+| Login | `sb_app_rw` |
+| Password | `SbFullControl_2026!` |
+
+If still failing, try **Options** → set **Connect to database** = `ShoppingBuddy`.
+
+Or force TCP server name: `tcp:DESKTOP-J5AN1SG\SQLEXPRESS`
+
+### You do NOT need SQL logins for MVP dev
+
+The .NET API uses **Windows Authentication** by default (`Trusted_Connection=True`). SQL logins are optional for learning read-only vs full-control roles. Continue with Windows auth if SQL auth keeps failing.
+
 ## Override server name
 
 ```bat
