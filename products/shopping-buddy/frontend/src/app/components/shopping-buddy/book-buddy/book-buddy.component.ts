@@ -20,6 +20,7 @@ export class BookBuddyComponent implements OnInit {
   form: FormGroup;
   isSubmitting = false;
   confirmation: BuddyBookingConfirmation | null = null;
+  errorMessage = '';
 
   readonly timeSlots = ['10:00 AM – 12:00 PM', '12:00 PM – 2:00 PM', '3:00 PM – 5:00 PM', '5:00 PM – 7:00 PM'];
 
@@ -71,6 +72,7 @@ export class BookBuddyComponent implements OnInit {
     }
 
     this.isSubmitting = true;
+    this.errorMessage = '';
     const value = this.form.value;
 
     this.buddyService
@@ -89,7 +91,19 @@ export class BookBuddyComponent implements OnInit {
           this.confirmation = result;
           this.isSubmitting = false;
         },
-        error: () => (this.isSubmitting = false),
+        error: (err: { error?: { message?: string; detail?: string }; status?: number }) => {
+          this.isSubmitting = false;
+          if (err?.status === 403) {
+            this.errorMessage =
+              err?.error?.message ||
+              'Only Customer accounts can book. Log in as customer@demo.com (not Admin or Buddy).';
+          } else {
+            this.errorMessage =
+              err?.error?.message ||
+              err?.error?.detail ||
+              'Booking could not be saved. Is AuthApi running? Are you logged in as a customer?';
+          }
+        },
       });
   }
 

@@ -1,17 +1,23 @@
 <div class="mb-4">
   <a routerLink="/shopping" class="btn btn-link btn-lg ps-0 text-decoration-none">&larr; Back to home</a>
   <h1 class="h2 fw-bold mb-1">My bookings</h1>
-  <p class="text-muted buddy-subtitle">Your upcoming and past shopping trips with verified buddies.</p>
+  <p class="text-muted buddy-subtitle">
+    Trips linked to your login email (Customer account).
+    <span *ngIf="auth.getCurrentUser() as user" class="d-block mt-1">
+      Signed in as <strong>{{ user.email }}</strong> (User #{{ user.id }})
+    </span>
+  </p>
 </div>
 
+<div *ngIf="infoMessage" class="alert alert-warning buddy-alert">{{ infoMessage }}</div>
 <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
 <div *ngIf="isLoading" class="text-center py-5">
   <div class="spinner-border text-primary" role="status"></div>
 </div>
 
-<div *ngIf="!isLoading && bookings.length === 0 && !errorMessage" class="alert alert-info buddy-alert">
-  No bookings yet.
+<div *ngIf="!isLoading && bookings.length === 0 && !errorMessage && !infoMessage" class="alert alert-info buddy-alert">
+  No bookings yet for this customer.
   <a routerLink="/shopping/find" class="alert-link">Find a buddy</a>
   to book your first trip.
 </div>
