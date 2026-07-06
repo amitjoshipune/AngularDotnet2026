@@ -4,7 +4,7 @@ using Dapper;
 
 namespace AuthApi.Repositories;
 
-public sealed class BuddyRepository
+public sealed class BuddyRepository : IBuddyRepository
 {
     private readonly ISqlConnectionFactory _connectionFactory;
 

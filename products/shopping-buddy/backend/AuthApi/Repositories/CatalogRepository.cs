@@ -4,7 +4,7 @@ using Dapper;
 
 namespace AuthApi.Repositories;
 
-public sealed class CatalogRepository
+public sealed class CatalogRepository : ICatalogRepository
 {
     private readonly ISqlConnectionFactory _connectionFactory;
 

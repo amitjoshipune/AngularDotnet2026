@@ -7,9 +7,9 @@ namespace AuthApi.Controllers;
 [Route("api/[controller]")]
 public class VenuesController : ControllerBase
 {
-    private readonly CatalogRepository _catalog;
+    private readonly ICatalogRepository _catalog;
 
-    public VenuesController(CatalogRepository catalog)
+    public VenuesController(ICatalogRepository catalog)
     {
         _catalog = catalog;
     }

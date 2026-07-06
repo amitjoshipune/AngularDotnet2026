@@ -11,9 +11,9 @@ namespace AuthApi.Controllers;
 [Authorize]
 public class BookingsController : ControllerBase
 {
-    private readonly BookingRepository _bookings;
+    private readonly IBookingRepository _bookings;
 
-    public BookingsController(BookingRepository bookings)
+    public BookingsController(IBookingRepository bookings)
     {
         _bookings = bookings;
     }

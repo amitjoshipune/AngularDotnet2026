@@ -52,7 +52,8 @@ GET    /api/bookings/mine     [JWT]
 - [x] Real JWT signing
 - [x] Angular wired to API for find/book/list bookings
 - [x] Legacy routes hidden
-- [ ] You: run `database/run-all.bat` on Lenovo
+- [x] Repository interfaces (`IUserRepository`, `IBuddyRepository`, …) for future EF swap
+- [ ] You: run `database/run-all.bat` on `DESKTOP-J5AN1SG\SQLEXPRESS`
 - [ ] You: `dotnet run` + `ng serve --port 4300` end-to-end test
 
 ## Week 2 preview

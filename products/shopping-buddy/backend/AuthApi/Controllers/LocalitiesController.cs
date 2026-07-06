@@ -7,9 +7,9 @@ namespace AuthApi.Controllers;
 [Route("api/[controller]")]
 public class LocalitiesController : ControllerBase
 {
-    private readonly CatalogRepository _catalog;
+    private readonly ICatalogRepository _catalog;
 
-    public LocalitiesController(CatalogRepository catalog)
+    public LocalitiesController(ICatalogRepository catalog)
     {
         _catalog = catalog;
     }

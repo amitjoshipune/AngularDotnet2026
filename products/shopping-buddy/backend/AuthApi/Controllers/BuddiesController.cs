@@ -8,9 +8,9 @@ namespace AuthApi.Controllers;
 [Route("api/[controller]")]
 public class BuddiesController : ControllerBase
 {
-    private readonly BuddyRepository _buddies;
+    private readonly IBuddyRepository _buddies;
 
-    public BuddiesController(BuddyRepository buddies)
+    public BuddiesController(IBuddyRepository buddies)
     {
         _buddies = buddies;
     }

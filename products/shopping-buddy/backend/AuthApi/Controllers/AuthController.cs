@@ -9,10 +9,10 @@ namespace AuthApi.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly UserRepository _users;
+    private readonly IUserRepository _users;
     private readonly JwtTokenService _jwtTokenService;
 
-    public AuthController(UserRepository users, JwtTokenService jwtTokenService)
+    public AuthController(IUserRepository users, JwtTokenService jwtTokenService)
     {
         _users = users;
         _jwtTokenService = jwtTokenService;
@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
         {
             return StatusCode(503, new
             {
-                message = "Database is unavailable. Run database/run-all.bat against LocalDB, then restart the API."
+                message = "Database is unavailable. Run database/run-all.bat against SQLEXPRESS, then restart the API."
             });
         }
 
