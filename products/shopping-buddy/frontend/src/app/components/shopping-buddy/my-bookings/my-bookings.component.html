@@ -1,0 +1,34 @@
+<div class="mb-4">
+  <a routerLink="/shopping" class="btn btn-link btn-lg ps-0 text-decoration-none">&larr; Back to home</a>
+  <h1 class="h2 fw-bold mb-1">My bookings</h1>
+  <p class="text-muted buddy-subtitle">Your upcoming and past shopping trips with verified buddies.</p>
+</div>
+
+<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+<div *ngIf="isLoading" class="text-center py-5">
+  <div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div *ngIf="!isLoading && bookings.length === 0 && !errorMessage" class="alert alert-info buddy-alert">
+  No bookings yet.
+  <a routerLink="/shopping/find" class="alert-link">Find a buddy</a>
+  to book your first trip.
+</div>
+
+<div class="row g-4" *ngIf="!isLoading && bookings.length > 0">
+  <div class="col-md-6" *ngFor="let booking of bookings">
+    <article class="card shadow-sm border-0 h-100">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h2 class="h5 mb-0">{{ booking.buddyName }}</h2>
+          <span class="badge rounded-pill" [ngClass]="statusClass(booking.status)">{{ booking.status }}</span>
+        </div>
+        <p class="mb-1"><strong>{{ booking.venueName }}</strong></p>
+        <p class="text-muted mb-2">{{ booking.localityName }} · {{ booking.activityType }}</p>
+        <p class="mb-1">{{ booking.date }} · {{ booking.timeSlot }}</p>
+        <p class="mb-0 small text-muted">Booking ID: {{ booking.bookingId }} · Safety PIN: {{ booking.safetyPin }}</p>
+      </div>
+    </article>
+  </div>
+</div>

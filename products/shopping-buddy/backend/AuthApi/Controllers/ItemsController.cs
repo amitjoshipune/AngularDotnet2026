@@ -1,5 +1,5 @@
-using AuthApi.Authorization;
 using AuthApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthApi.Controllers;
@@ -16,7 +16,7 @@ public class ItemsController : ControllerBase
     };
 
     [HttpGet]
-    [ApiAuthorize]
+    [Authorize]
     public IActionResult Get([FromQuery] string? search)
     {
         var items = string.IsNullOrWhiteSpace(search)
@@ -27,7 +27,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    [ApiAuthorize]
+    [Authorize]
     public IActionResult GetById(int id)
     {
         var item = Store.FirstOrDefault(x => x.Id == id);
@@ -35,7 +35,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPost]
-    [ApiAuthorize]
+    [Authorize]
     public IActionResult Create([FromBody] ItemCreateRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.Category))
@@ -57,7 +57,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [ApiAuthorize]
+    [Authorize]
     public IActionResult Update(int id, [FromBody] ItemUpdateRequest request)
     {
         var existing = Store.FirstOrDefault(x => x.Id == id);
@@ -73,7 +73,7 @@ public class ItemsController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    [ApiAuthorize]
+    [Authorize]
     public IActionResult Delete(int id)
     {
         var existing = Store.FirstOrDefault(x => x.Id == id);

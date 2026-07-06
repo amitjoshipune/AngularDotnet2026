@@ -30,6 +30,7 @@ export interface ShoppingBuddyProfile {
   preferredVenueIds: string[];
   /** Same-gender companion only — enforced at platform level. */
   gender: 'Female';
+  avatarUrl?: string;
 }
 
 export interface BuddySearchFilters {
