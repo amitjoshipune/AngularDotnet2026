@@ -4,40 +4,40 @@
   <p class="text-muted buddy-subtitle">Review safety rules before confirming. All meetings happen at public venues only.</p>
 </div>
 
-<div *ngIf="confirmation" class="card border-success shadow-sm buddy-confirm-card">
+<div *ngIf="confirmation as confirmed" class="card border-success shadow-sm buddy-confirm-card">
   <div class="card-body p-4 p-md-5 text-center">
     <div class="buddy-confirm-icon mb-3">✓</div>
     <h2 class="h3 text-success mb-3">Booking submitted</h2>
-    <p class="buddy-subtitle mb-4" *ngIf="confirmation.status === 'PendingBuddy'">
-      Waiting for <strong>{{ confirmation.buddyName }}</strong> to confirm. You will see status update in My bookings.
+    <p class="buddy-subtitle mb-4" *ngIf="confirmed.status === 'PendingBuddy'">
+      Waiting for <strong>{{ confirmed.buddyName }}</strong> to confirm. You will see status update in My bookings.
     </p>
-    <p class="buddy-subtitle mb-4" *ngIf="confirmation.status !== 'PendingBuddy'">
-      Your trip with <strong>{{ confirmation.buddyName }}</strong> at
-      <strong>{{ confirmation.venueName }}</strong>, {{ confirmation.localityName }} is reserved.
+    <p class="buddy-subtitle mb-4" *ngIf="confirmed.status !== 'PendingBuddy'">
+      Your trip with <strong>{{ confirmed.buddyName }}</strong> at
+      <strong>{{ confirmed.venueName }}</strong>, {{ confirmed.localityName }} is reserved.
     </p>
     <dl class="row justify-content-center buddy-confirm-details text-start mx-auto">
       <dt class="col-sm-4">Booking ID</dt>
-      <dd class="col-sm-8">{{ confirmation.bookingId }}</dd>
+      <dd class="col-sm-8">{{ confirmed.bookingId }}</dd>
       <dt class="col-sm-4">Date &amp; time</dt>
-      <dd class="col-sm-8">{{ confirmation.date }} · {{ confirmation.timeSlot }}</dd>
+      <dd class="col-sm-8">{{ confirmed.date }} · {{ confirmed.timeSlot }}</dd>
       <dt class="col-sm-4">Safety PIN</dt>
-      <dd class="col-sm-8"><code class="fs-5">{{ confirmation.safetyPin }}</code> — share with family only</dd>
+      <dd class="col-sm-8"><code class="fs-5">{{ confirmed.safetyPin }}</code> — share with family only</dd>
       <dt class="col-sm-4">Emergency alert</dt>
-      <dd class="col-sm-8">{{ confirmation.emergencyContact }}</dd>
+      <dd class="col-sm-8">{{ confirmed.emergencyContact }}</dd>
     </dl>
     <a routerLink="/shopping/find" class="btn btn-outline-primary btn-lg mt-3 me-2">Find another buddy</a>
     <a routerLink="/shopping/my-bookings" class="btn btn-primary btn-lg mt-3">View my bookings</a>
   </div>
 </div>
 
-<div class="row g-4" *ngIf="buddy && !confirmation">
+<div class="row g-4" *ngIf="!confirmation && buddy as selectedBuddy">
   <div class="col-lg-5">
     <div class="card border-0 shadow-sm h-100">
       <div class="card-body p-4">
         <h2 class="h5 mb-3">Buddy profile</h2>
-        <p class="buddy-bio mb-2">{{ buddy.bio }}</p>
+        <p class="buddy-bio mb-2">{{ selectedBuddy.bio }}</p>
         <p class="text-muted buddy-meta mb-0">
-          {{ localityName(buddy.localityId) }} · ★ {{ buddy.rating }} · {{ buddy.completedTrips }} completed trips
+          {{ localityName(selectedBuddy.localityId) }} · ★ {{ selectedBuddy.rating }} · {{ selectedBuddy.completedTrips }} completed trips
         </p>
       </div>
     </div>
@@ -74,7 +74,7 @@
           <div class="mb-3">
             <label class="form-label buddy-label" for="activityType">Trip type</label>
             <select id="activityType" class="form-select form-select-lg" formControlName="activityType">
-              <option *ngFor="let type of buddy.activityTypes" [value]="type">{{ type }}</option>
+              <option *ngFor="let type of selectedBuddy.activityTypes" [value]="type">{{ type }}</option>
             </select>
           </div>
 

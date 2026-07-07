@@ -44,6 +44,14 @@ npm install
 ng serve --port 4300
 ```
 
+**If `ng build` fails with missing `@angular/common/http` or `rxjs`:** your `node_modules` folder is incomplete (common on Windows after an interrupted install). From `frontend` in **cmd.exe** (not Git Bash):
+
+```bat
+reinstall-frontend.bat
+```
+
+That script stops Node, removes `node_modules` and `.angular`, runs `npm ci`, verifies `http.mjs` exists, and runs a test build.
+
 Open http://localhost:4300/login
 
 **Demo logins:** `customer@demo.com` / `Customer@123` · `meera@demo.com` / `Buddy@123` (buddy + customer) · `admin@example.com` / `Admin@123`
