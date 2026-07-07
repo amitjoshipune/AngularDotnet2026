@@ -65,9 +65,9 @@ GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UQ_Bookings_CustomerSlot_Active')
 BEGIN
-    CREATE UNIQUE INDEX UQ_Bookings_CustomerSlot_Active
+    CREATE UNIQUE NONCLUSTERED INDEX UQ_Bookings_CustomerSlot_Active
         ON dbo.Bookings (CustomerUserId, VenueId, BookingDate, TimeSlot)
-        WHERE Status NOT IN (N'Cancelled', N'RejectedByBuddy');
+        WHERE Status IN (N'PendingBuddy', N'Confirmed', N'Completed');
 END
 GO
 
