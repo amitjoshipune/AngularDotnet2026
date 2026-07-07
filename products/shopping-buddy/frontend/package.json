@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json --port 4300",
     "build": "ng build",
+    "build:verbose": "ng build --verbose --progress",
+    "install:verbose": "npm install --loglevel verbose",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "verify:deps": "node scripts/verify-deps.js"
