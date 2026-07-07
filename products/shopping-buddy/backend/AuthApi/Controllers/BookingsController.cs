@@ -12,6 +12,15 @@ namespace AuthApi.Controllers;
 [Authorize]
 public class BookingsController : ControllerBase
 {
+    private static readonly RejectionReasonDto[] RejectionReasons =
+    {
+        new() { code = "ScheduleConflict", label = "Already booked at that time", requiresText = false },
+        new() { code = "VenueTooFar", label = "Venue is too far for me", requiresText = false },
+        new() { code = "PersonalEmergency", label = "Personal / family emergency", requiresText = false },
+        new() { code = "SafetyConcern", label = "Safety concern about request", requiresText = false },
+        new() { code = "Other", label = "Other reason", requiresText = true }
+    };
+
     private readonly IBookingRepository _bookings;
     private readonly IWebHostEnvironment _environment;
 
@@ -21,13 +30,16 @@ public class BookingsController : ControllerBase
         _environment = environment;
     }
 
+    [HttpGet("rejection-reasons")]
+    [AllowAnonymous]
+    public IActionResult GetRejectionReasons() => Ok(RejectionReasons);
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateBookingRequest request)
     {
-        var customerCheck = EnsureCustomerAccount();
-        if (customerCheck is not null)
+        if (!HasRole("Customer"))
         {
-            return customerCheck;
+            return CustomerRequired();
         }
 
         if (!request.acceptedSafetyRules)
@@ -52,34 +64,37 @@ public class BookingsController : ControllerBase
 
         try
         {
-            var confirmation = await _bookings.CreateAsync(userId.Value, request);
+            var (confirmation, isDuplicate) = await _bookings.CreateAsync(userId.Value, request);
+            if (isDuplicate)
+            {
+                return Conflict(new
+                {
+                    message = "You already have a booking at this venue, date, and time slot."
+                });
+            }
+
             return confirmation is null
                 ? BadRequest(new { message = "Invalid buddy or venue." })
                 : Ok(confirmation);
         }
         catch (Exception ex)
         {
-            return StatusCode(503, new
-            {
-                message = "Database error while saving the booking.",
-                detail = _environment.IsDevelopment() ? ex.Message : null
-            });
+            return DatabaseError("saving the booking", ex);
         }
     }
 
     [HttpGet("mine")]
     public async Task<IActionResult> GetMine()
     {
-        var customerCheck = EnsureCustomerAccount();
-        if (customerCheck is not null)
+        if (!HasRole("Customer"))
         {
-            return customerCheck;
+            return CustomerRequired();
         }
 
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized(new { message = "Could not read your user id from the login token. Sign out and sign in again." });
+            return Unauthorized();
         }
 
         try
@@ -89,27 +104,121 @@ public class BookingsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(503, new
-            {
-                message = "Database error while loading bookings.",
-                detail = _environment.IsDevelopment() ? ex.Message : null
-            });
+            return DatabaseError("loading bookings", ex);
         }
     }
 
-    private IActionResult? EnsureCustomerAccount()
+    [HttpGet("buddy/incoming")]
+    public async Task<IActionResult> GetBuddyIncoming()
     {
-        var role = User.FindFirstValue(ClaimTypes.Role) ?? User.FindFirstValue("role");
-        if (string.Equals(role, "Customer", StringComparison.OrdinalIgnoreCase))
+        if (!HasRole("Buddy"))
         {
-            return null;
+            return StatusCode(403, new { message = "Buddy account required. Log in as meera@demo.com." });
         }
 
-        return StatusCode(403, new
+        var userId = GetUserId();
+        if (userId is null)
         {
-            message = "Bookings are linked to Customer accounts only. Log in as customer@demo.com or senior@demo.com to book or view trips."
-        });
+            return Unauthorized();
+        }
+
+        var buddyId = await _bookings.GetBuddyIdForUserAsync(userId.Value);
+        if (buddyId is null)
+        {
+            return NotFound(new { message = "No buddy profile is linked to this login." });
+        }
+
+        try
+        {
+            var bookings = await _bookings.GetIncomingForBuddyUserAsync(userId.Value);
+            return Ok(bookings);
+        }
+        catch (Exception ex)
+        {
+            return DatabaseError("loading buddy requests", ex);
+        }
     }
+
+    [HttpPost("{bookingId}/confirm")]
+    public async Task<IActionResult> Confirm(string bookingId)
+    {
+        if (!HasRole("Buddy"))
+        {
+            return StatusCode(403, new { message = "Buddy account required." });
+        }
+
+        var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            var ok = await _bookings.ConfirmAsync(bookingId, userId.Value);
+            return ok ? Ok(new { message = "Booking confirmed." }) : NotFound(new { message = "Pending booking not found." });
+        }
+        catch (Exception ex)
+        {
+            return DatabaseError("confirming booking", ex);
+        }
+    }
+
+    [HttpPost("{bookingId}/reject")]
+    public async Task<IActionResult> Reject(string bookingId, [FromBody] RejectBookingRequest request)
+    {
+        if (!HasRole("Buddy"))
+        {
+            return StatusCode(403, new { message = "Buddy account required." });
+        }
+
+        var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        if (string.IsNullOrWhiteSpace(request.reasonCode))
+        {
+            return BadRequest(new { message = "Rejection reason code is required." });
+        }
+
+        try
+        {
+            var ok = await _bookings.RejectAsync(bookingId, userId.Value, request);
+            if (!ok)
+            {
+                return BadRequest(new
+                {
+                    message = "Could not reject booking. Check reason code (Other needs free text) and that status is PendingBuddy."
+                });
+            }
+
+            return Ok(new { message = "Booking rejected." });
+        }
+        catch (Exception ex)
+        {
+            return DatabaseError("rejecting booking", ex);
+        }
+    }
+
+    private bool HasRole(string role) =>
+        User.Claims.Any(c =>
+            (c.Type == ClaimTypes.Role || c.Type == "role") &&
+            string.Equals(c.Value, role, StringComparison.OrdinalIgnoreCase));
+
+    private IActionResult CustomerRequired() =>
+        StatusCode(403, new
+        {
+            message = "Customer role required. Use customer@demo.com or a buddy account that also has Customer role."
+        });
+
+    private IActionResult DatabaseError(string action, Exception ex) =>
+        StatusCode(503, new
+        {
+            message = $"Database error while {action}.",
+            detail = _environment.IsDevelopment() ? ex.Message : null
+        });
 
     private int? GetUserId()
     {

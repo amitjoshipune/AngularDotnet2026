@@ -1,14 +1,5 @@
 namespace AuthApi.Models;
 
-public class UserRecord
-{
-    public int UserId { get; set; }
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string DisplayName { get; set; } = string.Empty;
-    public string Role { get; set; } = string.Empty;
-}
-
 public class LocalityDto
 {
     public string id { get; set; } = string.Empty;
@@ -71,6 +62,7 @@ public class BookingConfirmationDto
     public string date { get; set; } = string.Empty;
     public string timeSlot { get; set; } = string.Empty;
     public string safetyPin { get; set; } = string.Empty;
+    public string status { get; set; } = "PendingBuddy";
     public string emergencyContact { get; set; } = "+91 98XX-XXX-XXX (demo)";
 }
 
@@ -78,6 +70,7 @@ public class BookingListItemDto
 {
     public string bookingId { get; set; } = string.Empty;
     public string buddyName { get; set; } = string.Empty;
+    public string customerName { get; set; } = string.Empty;
     public string venueName { get; set; } = string.Empty;
     public string localityName { get; set; } = string.Empty;
     public string date { get; set; } = string.Empty;
@@ -85,6 +78,37 @@ public class BookingListItemDto
     public string activityType { get; set; } = string.Empty;
     public string status { get; set; } = string.Empty;
     public string safetyPin { get; set; } = string.Empty;
+    public string? specialNotes { get; set; }
+    public string? rejectionReasonCode { get; set; }
+    public string? rejectionReasonText { get; set; }
+}
+
+public class BuddyIncomingBookingDto
+{
+    public string bookingId { get; set; } = string.Empty;
+    public string customerName { get; set; } = string.Empty;
+    public string customerEmail { get; set; } = string.Empty;
+    public string venueName { get; set; } = string.Empty;
+    public string localityName { get; set; } = string.Empty;
+    public string date { get; set; } = string.Empty;
+    public string timeSlot { get; set; } = string.Empty;
+    public string activityType { get; set; } = string.Empty;
+    public string? specialNotes { get; set; }
+    public string status { get; set; } = string.Empty;
+    public string createdAt { get; set; } = string.Empty;
+}
+
+public class RejectBookingRequest
+{
+    public string reasonCode { get; set; } = string.Empty;
+    public string? reasonText { get; set; }
+}
+
+public class RejectionReasonDto
+{
+    public string code { get; set; } = string.Empty;
+    public string label { get; set; } = string.Empty;
+    public bool requiresText { get; set; }
 }
 
 internal class BuddyRow

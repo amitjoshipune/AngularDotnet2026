@@ -7,8 +7,11 @@
 <div *ngIf="confirmation" class="card border-success shadow-sm buddy-confirm-card">
   <div class="card-body p-4 p-md-5 text-center">
     <div class="buddy-confirm-icon mb-3">✓</div>
-    <h2 class="h3 text-success mb-3">Booking confirmed (demo)</h2>
-    <p class="buddy-subtitle mb-4">
+    <h2 class="h3 text-success mb-3">Booking submitted</h2>
+    <p class="buddy-subtitle mb-4" *ngIf="confirmation.status === 'PendingBuddy'">
+      Waiting for <strong>{{ confirmation.buddyName }}</strong> to confirm. You will see status update in My bookings.
+    </p>
+    <p class="buddy-subtitle mb-4" *ngIf="confirmation.status !== 'PendingBuddy'">
       Your trip with <strong>{{ confirmation.buddyName }}</strong> at
       <strong>{{ confirmation.venueName }}</strong>, {{ confirmation.localityName }} is reserved.
     </p>

@@ -46,7 +46,9 @@ ng serve --port 4300
 
 Open http://localhost:4300/login
 
-**Demo logins:** `customer@demo.com` / `Customer@123` · `admin@example.com` / `Admin@123`
+**Demo logins:** `customer@demo.com` / `Customer@123` · `meera@demo.com` / `Buddy@123` (buddy + customer) · `admin@example.com` / `Admin@123`
+
+See [`docs/mvp-roles-and-booking.md`](docs/mvp-roles-and-booking.md) for roles and booking workflow.
 
 The Angular dev server proxies `/api` to `http://localhost:5180` via `frontend/proxy.conf.json`.
 
@@ -55,8 +57,10 @@ The Angular dev server proxies `/api` to `http://localhost:5180` via `frontend/p
 1. **Sign in** — demo accounts on login page
 2. **Home** — `/shopping` — product overview and trust badges
 3. **Find buddy** — filter by Pune area (Wakad, Aundh, Chinchwad, …) and public mall
-4. **Book** — accept safety rules, pick date/slot, get demo confirmation with safety PIN
-5. **Safety & legal** — `/shopping/safety` (public, no login required)
+4. **Book** — accept safety rules, pick date/slot; status starts as **PendingBuddy** (buddy must confirm)
+5. **Buddy requests** — log in as `meera@demo.com` → confirm or reject with reason
+6. **My bookings** — customer sees status updates (Confirmed / Rejected)
+7. **Safety & legal** — `/shopping/safety` (public, no login required)
 
 ## Project structure
 

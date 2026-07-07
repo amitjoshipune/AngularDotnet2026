@@ -32,6 +32,7 @@ import { FindBuddyComponent } from './components/shopping-buddy/find-buddy/find-
 import { BookBuddyComponent } from './components/shopping-buddy/book-buddy/book-buddy.component';
 import { SafetyLegalComponent } from './components/shopping-buddy/safety-legal/safety-legal.component';
 import { MyBookingsComponent } from './components/shopping-buddy/my-bookings/my-bookings.component';
+import { BuddyIncomingComponent } from './components/shopping-buddy/buddy-incoming/buddy-incoming.component';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { MockApiInterceptor } from './core/interceptors/mock-api.interceptor';
 
@@ -64,6 +65,7 @@ import { MockApiInterceptor } from './core/interceptors/mock-api.interceptor';
     BookBuddyComponent,
     SafetyLegalComponent,
     MyBookingsComponent,
+    BuddyIncomingComponent,
   ],
   imports: [BrowserModule, CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, AppRoutingModule],
   providers: [

@@ -23,6 +23,7 @@ import {
 export interface BookingListItem {
   bookingId: string;
   buddyName: string;
+  customerName?: string;
   venueName: string;
   localityName: string;
   date: string;
@@ -30,6 +31,34 @@ export interface BookingListItem {
   activityType: string;
   status: string;
   safetyPin: string;
+  specialNotes?: string;
+  rejectionReasonCode?: string;
+  rejectionReasonText?: string;
+}
+
+export interface BuddyIncomingBooking {
+  bookingId: string;
+  customerName: string;
+  customerEmail: string;
+  venueName: string;
+  localityName: string;
+  date: string;
+  timeSlot: string;
+  activityType: string;
+  specialNotes?: string;
+  status: string;
+  createdAt: string;
+}
+
+export interface RejectionReason {
+  code: string;
+  label: string;
+  requiresText: boolean;
+}
+
+export interface RejectBookingPayload {
+  reasonCode: string;
+  reasonText?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -124,6 +153,25 @@ export class ShoppingBuddyService {
     return this.http.get<BookingListItem[]>(`${environment.apiUrl}/bookings/mine`);
   }
 
+  getBuddyIncomingBookings(): Observable<BuddyIncomingBooking[]> {
+    return this.http.get<BuddyIncomingBooking[]>(`${environment.apiUrl}/bookings/buddy/incoming`);
+  }
+
+  confirmBooking(bookingId: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiUrl}/bookings/${bookingId}/confirm`, {});
+  }
+
+  rejectBooking(bookingId: string, payload: RejectBookingPayload): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${environment.apiUrl}/bookings/${bookingId}/reject`,
+      payload
+    );
+  }
+
+  getRejectionReasons(): Observable<RejectionReason[]> {
+    return this.http.get<RejectionReason[]>(`${environment.apiUrl}/bookings/rejection-reasons`);
+  }
+
   getLocalityName(id: string): string {
     return PUNE_LOCALITIES.find((l) => l.id === id)?.name ?? id;
   }
@@ -166,6 +214,7 @@ export class ShoppingBuddyService {
       timeSlot: request.timeSlot,
       safetyPin: Math.floor(1000 + Math.random() * 9000).toString(),
       emergencyContact: '+91 98XX-XXX-XXX (demo)',
+      status: 'PendingBuddy',
     });
   }
 }

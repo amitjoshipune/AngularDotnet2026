@@ -93,10 +93,14 @@ export class BookBuddyComponent implements OnInit {
         },
         error: (err: { error?: { message?: string; detail?: string }; status?: number }) => {
           this.isSubmitting = false;
-          if (err?.status === 403) {
+          if (err?.status === 409) {
             this.errorMessage =
               err?.error?.message ||
-              'Only Customer accounts can book. Log in as customer@demo.com (not Admin or Buddy).';
+              'You already have a booking at this venue, date, and time slot.';
+          } else if (err?.status === 403) {
+            this.errorMessage =
+              err?.error?.message ||
+              'Only Customer accounts can book. Log in as customer@demo.com or a buddy account (meera@demo.com).';
           } else {
             this.errorMessage =
               err?.error?.message ||
