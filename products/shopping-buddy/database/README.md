@@ -18,7 +18,7 @@ cd products\shopping-buddy\database
 run-all.bat
 ```
 
-Scripts run in order: create DB → schema → seed → SQL logins.
+Scripts run in order: create DB → schema → seed → SQL logins → booking workflow (007).
 
 ## Connection strings (`appsettings.Development.json`)
 

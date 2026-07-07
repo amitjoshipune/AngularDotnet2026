@@ -19,12 +19,9 @@ export class MyBookingsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const role = this.auth.getUserRole();
-    if (role && role !== 'Customer') {
+    if (!this.auth.hasRole('Customer')) {
       this.infoMessage =
-        'You are signed in as ' +
-        role +
-        '. Bookings belong to Customer accounts. Use customer@demo.com or senior@demo.com to view trips.';
+        'Customer role required to view your trips. Use customer@demo.com or a buddy account with Customer role.';
       return;
     }
 
@@ -43,23 +40,36 @@ export class MyBookingsComponent implements OnInit {
       error: (err: { error?: { message?: string }; status?: number }) => {
         this.isLoading = false;
         if (err?.status === 403) {
-          this.infoMessage = err?.error?.message || 'Customer account required.';
+          this.infoMessage = err?.error?.message || 'Customer role required.';
           return;
         }
         this.errorMessage =
           err?.error?.message ||
-          'Could not load bookings. Ensure AuthApi is running and you are logged in as a customer.';
+          'Could not load bookings. Ensure AuthApi is running and migration 007 is applied.';
       },
     });
   }
 
   statusClass(status: string): string {
-    if (status === 'Completed') {
+    if (status === 'PendingBuddy') {
+      return 'bg-warning text-dark';
+    }
+    if (status === 'Completed' || status === 'Confirmed') {
       return 'bg-success';
     }
-    if (status === 'Cancelled') {
+    if (status === 'RejectedByBuddy' || status === 'Cancelled') {
       return 'bg-secondary';
     }
     return 'bg-primary';
+  }
+
+  statusLabel(status: string): string {
+    if (status === 'PendingBuddy') {
+      return 'Waiting for buddy';
+    }
+    if (status === 'RejectedByBuddy') {
+      return 'Rejected by buddy';
+    }
+    return status;
   }
 }

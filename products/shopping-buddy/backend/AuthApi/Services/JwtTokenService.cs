@@ -20,14 +20,24 @@ public sealed class JwtTokenService
         var expiresMinutes = _configuration.GetValue<int>("Jwt:ExpiresMinutes", 60);
         var expiresAt = DateTimeOffset.UtcNow.AddMinutes(expiresMinutes);
 
-        var claims = new[]
+        var roleClaims = user.roles
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Select(role => new Claim(ClaimTypes.Role, role))
+            .ToList();
+
+        if (roleClaims.Count == 0 && !string.IsNullOrWhiteSpace(user.role))
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.id),
-            new Claim(JwtRegisteredClaimNames.Email, user.email),
-            new Claim(JwtRegisteredClaimNames.Name, user.displayName),
-            new Claim(ClaimTypes.Role, user.role),
-            new Claim("role", user.role)
+            roleClaims.Add(new Claim(ClaimTypes.Role, user.role));
+        }
+
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, user.id),
+            new(JwtRegisteredClaimNames.Email, user.email),
+            new(JwtRegisteredClaimNames.Name, user.displayName),
+            new("roles", string.Join(',', roleClaims.Select(c => c.Value)))
         };
+        claims.AddRange(roleClaims);
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GetSigningKey()));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -46,6 +56,22 @@ public sealed class JwtTokenService
             expiresIn = expiresMinutes * 60,
             user = user
         };
+    }
+
+    public static string ResolvePrimaryRole(IEnumerable<string> roles)
+    {
+        var list = roles.ToList();
+        if (list.Any(r => string.Equals(r, "Admin", StringComparison.OrdinalIgnoreCase)))
+        {
+            return "Admin";
+        }
+
+        if (list.Any(r => string.Equals(r, "Buddy", StringComparison.OrdinalIgnoreCase)))
+        {
+            return "Buddy";
+        }
+
+        return list.FirstOrDefault() ?? "Customer";
     }
 
     public string GetSigningKey()

@@ -1,0 +1,88 @@
+<div class="mb-4">
+  <a routerLink="/shopping" class="btn btn-link btn-lg ps-0 text-decoration-none">&larr; Back to home</a>
+  <h1 class="h2 fw-bold mb-1">Buddy requests</h1>
+  <p class="text-muted buddy-subtitle">
+    Customers who want to book you. Confirm or reject each request.
+    <span class="d-block mt-1" *ngIf="auth.getCurrentUser() as user">
+      Signed in as <strong>{{ user.displayName }}</strong> ({{ auth.getRolesLabel() }})
+    </span>
+  </p>
+</div>
+
+<div *ngIf="infoMessage" class="alert alert-warning">{{ infoMessage }}</div>
+<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+<div *ngIf="isLoading" class="text-center py-5">
+  <div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div *ngIf="!isLoading && bookings.length === 0 && !infoMessage && !errorMessage" class="alert alert-info">
+  No booking requests yet.
+</div>
+
+<div class="row g-4" *ngIf="!isLoading && bookings.length > 0">
+  <div class="col-md-6" *ngFor="let booking of bookings">
+    <article class="card shadow-sm border-0 h-100">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h2 class="h5 mb-0">{{ booking.customerName }}</h2>
+          <span class="badge rounded-pill" [ngClass]="statusClass(booking.status)">
+            {{ statusLabel(booking.status) }}
+          </span>
+        </div>
+        <p class="text-muted small mb-2">{{ booking.customerEmail }}</p>
+        <p class="mb-1"><strong>{{ booking.venueName }}</strong> · {{ booking.localityName }}</p>
+        <p class="mb-1">{{ booking.date }} · {{ booking.timeSlot }} · {{ booking.activityType }}</p>
+        <p class="mb-3 small" *ngIf="booking.specialNotes">Note: {{ booking.specialNotes }}</p>
+
+        <div class="d-flex gap-2 flex-wrap" *ngIf="booking.status === 'PendingBuddy'">
+          <button
+            type="button"
+            class="btn btn-success btn-lg"
+            [disabled]="isSubmitting"
+            (click)="confirm(booking.bookingId)"
+          >
+            Confirm
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-danger btn-lg"
+            [disabled]="isSubmitting"
+            (click)="openReject(booking.bookingId)"
+          >
+            Reject
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<div class="card shadow mt-4" *ngIf="rejectBookingId">
+  <div class="card-body p-4">
+    <h2 class="h5 mb-3">Reject booking {{ rejectBookingId }}</h2>
+    <div class="mb-3">
+      <label class="form-label" for="reasonCode">Reason</label>
+      <select id="reasonCode" class="form-select form-select-lg" [(ngModel)]="rejectReasonCode">
+        <option value="">Select a reason</option>
+        <option *ngFor="let reason of rejectionReasons" [value]="reason.code">{{ reason.label }}</option>
+      </select>
+    </div>
+    <div class="mb-3" *ngIf="rejectReasonCode === 'Other'">
+      <label class="form-label" for="reasonText">Please explain</label>
+      <textarea
+        id="reasonText"
+        class="form-control form-control-lg"
+        rows="3"
+        [(ngModel)]="rejectReasonText"
+        placeholder="Type your reason"
+      ></textarea>
+    </div>
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-danger btn-lg" [disabled]="isSubmitting" (click)="submitReject()">
+        Submit rejection
+      </button>
+      <button type="button" class="btn btn-outline-secondary btn-lg" (click)="cancelReject()">Cancel</button>
+    </div>
+  </div>
+</div>

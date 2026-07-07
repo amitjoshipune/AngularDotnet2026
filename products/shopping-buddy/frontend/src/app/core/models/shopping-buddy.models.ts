@@ -59,5 +59,6 @@ export interface BuddyBookingConfirmation {
   date: string;
   timeSlot: string;
   safetyPin: string;
+  status?: string;
   emergencyContact: string;
 }

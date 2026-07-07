@@ -6,12 +6,13 @@
     <div class="d-flex align-items-center gap-3 flex-wrap">
       <ng-container *ngIf="auth.isAuthenticated()">
         <a class="nav-link text-white-50" routerLink="/shopping">Home</a>
-        <a class="nav-link text-white-50" routerLink="/shopping/find">Find buddy</a>
-        <a class="nav-link text-white-50" routerLink="/shopping/my-bookings">My bookings</a>
+        <a class="nav-link text-white-50" *ngIf="isCustomer()" routerLink="/shopping/find">Find buddy</a>
+        <a class="nav-link text-white-50" *ngIf="isCustomer()" routerLink="/shopping/my-bookings">My bookings</a>
+        <a class="nav-link text-white-50" *ngIf="isBuddy()" routerLink="/shopping/buddy-requests">Buddy requests</a>
         <a class="nav-link text-white-50" routerLink="/shopping/safety">Safety</a>
         <a class="nav-link text-white-50" *ngIf="isAdmin()" routerLink="/admin">Admin</a>
         <span class="navbar-text text-white-50 small d-none d-md-inline">
-          {{ auth.getCurrentUser()?.displayName }} ({{ auth.getUserRole() }})
+          {{ auth.getCurrentUser()?.displayName }} ({{ auth.getRolesLabel() }})
         </span>
         <button type="button" class="btn btn-sm btn-outline-light" (click)="logout()">Sign out</button>
       </ng-container>

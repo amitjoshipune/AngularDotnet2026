@@ -12,6 +12,7 @@ import { FindBuddyComponent } from './components/shopping-buddy/find-buddy/find-
 import { BookBuddyComponent } from './components/shopping-buddy/book-buddy/book-buddy.component';
 import { SafetyLegalComponent } from './components/shopping-buddy/safety-legal/safety-legal.component';
 import { MyBookingsComponent } from './components/shopping-buddy/my-bookings/my-bookings.component';
+import { BuddyIncomingComponent } from './components/shopping-buddy/buddy-incoming/buddy-incoming.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
@@ -34,6 +35,11 @@ const routes: Routes = [
   {
     path: 'shopping/my-bookings',
     component: MyBookingsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'shopping/buddy-requests',
+    component: BuddyIncomingComponent,
     canActivate: [AuthGuard],
   },
   {

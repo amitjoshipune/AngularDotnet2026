@@ -42,13 +42,31 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  getRoles(): UserRole[] {
+    const user = this.getCurrentUser();
+    if (!user) {
+      return [];
+    }
+    if (user.roles?.length) {
+      return user.roles;
+    }
+    return user.role ? [user.role] : [];
+  }
+
+  hasRole(role: UserRole): boolean {
+    return this.getRoles().includes(role);
+  }
+
   getUserRole(): UserRole | null {
     return this.getCurrentUser()?.role ?? null;
   }
 
+  getRolesLabel(): string {
+    return this.getRoles().join(', ');
+  }
+
   getHomeRoute(): string {
-    const role = this.getUserRole();
-    if (role === 'Admin') {
+    if (this.hasRole('Admin')) {
       return '/admin';
     }
     return '/shopping';
@@ -59,6 +77,7 @@ export class AuthService {
     const user = this.tokenStorage.getUser();
 
     if (token && user && !isTokenExpired(token)) {
+      this.normalizeUser(user);
       this.currentUserSubject.next(user);
       return;
     }
@@ -72,11 +91,18 @@ export class AuthService {
       return;
     }
 
+    this.normalizeUser(response.user);
     this.tokenStorage.saveSession(
       response.accessToken,
       response.refreshToken,
       response.user
     );
     this.currentUserSubject.next(response.user);
+  }
+
+  private normalizeUser(user: AuthUser): void {
+    if (!user.roles?.length && user.role) {
+      user.roles = [user.role];
+    }
   }
 }

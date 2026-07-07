@@ -5,6 +5,7 @@ export interface AuthUser {
   email: string;
   displayName: string;
   role: UserRole;
+  roles?: UserRole[];
 }
 
 export interface LoginRequest {
@@ -24,6 +25,7 @@ export interface JwtPayload {
   email: string;
   name: string;
   role: UserRole;
+  roles?: string;
   exp: number;
   iat: number;
 }

@@ -22,7 +22,15 @@ export class AppComponent {
   }
 
   isAdmin(): boolean {
-    return this.auth.getUserRole() === 'Admin';
+    return this.auth.hasRole('Admin');
+  }
+
+  isCustomer(): boolean {
+    return this.auth.hasRole('Customer');
+  }
+
+  isBuddy(): boolean {
+    return this.auth.hasRole('Buddy');
   }
 
   logout(): void {

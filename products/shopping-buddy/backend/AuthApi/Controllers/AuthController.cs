@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
         {
             return StatusCode(503, new
             {
-                message = "Database is unavailable. Run database/run-all.bat against SQLEXPRESS, then restart the API."
+                message = "Database is unavailable. Run database scripts including 007_booking_workflow.sql, then restart the API."
             });
         }
 
@@ -44,12 +44,14 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Invalid email or password." });
         }
 
+        var roles = account.Roles.Count > 0 ? account.Roles : new List<string> { account.Role };
         var user = new AuthUser
         {
             id = account.UserId.ToString(),
             email = account.Email,
             displayName = account.DisplayName,
-            role = account.Role
+            roles = roles,
+            role = JwtTokenService.ResolvePrimaryRole(roles)
         };
 
         return Ok(_jwtTokenService.CreateLoginResponse(user));
