@@ -22,7 +22,8 @@
       <dt class="col-sm-4">Emergency alert</dt>
       <dd class="col-sm-8">{{ confirmation.emergencyContact }}</dd>
     </dl>
-    <a routerLink="/shopping/find" class="btn btn-primary btn-lg mt-3">Find another buddy</a>
+    <a routerLink="/shopping/find" class="btn btn-outline-primary btn-lg mt-3 me-2">Find another buddy</a>
+    <a routerLink="/shopping/my-bookings" class="btn btn-primary btn-lg mt-3">View my bookings</a>
   </div>
 </div>
 
@@ -43,6 +44,8 @@
     <div class="card border-0 shadow-sm">
       <div class="card-body p-4">
         <form [formGroup]="form" (ngSubmit)="submit()">
+          <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
+
           <div class="mb-3">
             <label class="form-label buddy-label" for="venue">Meeting venue (public only)</label>
             <select id="venue" class="form-select form-select-lg" formControlName="venueId">
