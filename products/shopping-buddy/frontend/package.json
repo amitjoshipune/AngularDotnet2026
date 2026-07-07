@@ -4,7 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
+    "start:verbose": "ng serve --proxy-config proxy.conf.json --port 4300 --verbose",
     "build": "ng build",
+    "build:verbose": "ng build --verbose --progress",
+    "install:verbose": "npm install --loglevel verbose",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
