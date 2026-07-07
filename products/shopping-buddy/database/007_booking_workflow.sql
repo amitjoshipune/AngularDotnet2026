@@ -3,7 +3,12 @@
   - UserRoles: Customer + Buddy can coexist (buddy can also book trips)
   - Booking status: PendingBuddy → Confirmed | RejectedByBuddy
   - No duplicate: same customer + venue + date + time slot (active bookings)
+  Filtered index batch needs QUOTED_IDENTIFIER ON (included below; or sqlcmd -I).
 */
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
+GO
+
 USE ShoppingBuddy;
 GO
 
