@@ -41,3 +41,6 @@ Thumbs.db
 
 # Azure local
 **/local.settings.json
+/products/shopping-buddy/frontend/node_modules_old
+products/shopping-buddy/frontend/ng-build.log
+products/shopping-buddy/frontend/npm-install.log
