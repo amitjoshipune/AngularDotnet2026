@@ -43,7 +43,9 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddSingleton<JwtTokenService>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IOtpService, OtpService>();
-builder.Services.AddSingleton<IOtpSender, ConsoleOtpSender>();
+builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddScoped<IUserDocumentRepository, UserDocumentRepository>();
+builder.Services.AddSingleton<IDocumentStorageService, LocalDocumentStorageService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? throw new InvalidOperationException("Jwt:Key is not configured.");

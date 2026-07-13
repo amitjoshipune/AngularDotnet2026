@@ -18,6 +18,7 @@ import { BookBuddyComponent } from './components/shopping-buddy/book-buddy/book-
 import { SafetyLegalComponent } from './components/shopping-buddy/safety-legal/safety-legal.component';
 import { MyBookingsComponent } from './components/shopping-buddy/my-bookings/my-bookings.component';
 import { BuddyIncomingComponent } from './components/shopping-buddy/buddy-incoming/buddy-incoming.component';
+import { ProfileComponent } from './components/shopping-buddy/profile/profile.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
@@ -45,6 +46,11 @@ const routes: Routes = [
   {
     path: 'shopping/my-bookings',
     component: MyBookingsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
     canActivate: [AuthGuard],
   },
   {

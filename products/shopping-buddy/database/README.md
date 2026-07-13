@@ -18,9 +18,13 @@ cd products\shopping-buddy\database
 run-all.bat
 ```
 
-Scripts run in order: create DB → schema → seed → SQL logins → booking workflow (007) → account auth (009).
+Scripts run in order: create DB → schema → seed → SQL logins → booking workflow (007) → account auth (009) → profiles (010) → identity/cancel (011).
 
-For an **existing** database that already has 001–008, run only `009_account_auth.sql`.
+For an **existing** database that already has 001–009, run only:
+```bat
+sqlcmd -S DESKTOP-J5AN1SG\SQLEXPRESS -E -i 010_user_profiles.sql
+sqlcmd -S DESKTOP-J5AN1SG\SQLEXPRESS -E -i 011_identity_and_cancel.sql
+```
 
 ## Connection strings (`appsettings.Development.json`)
 

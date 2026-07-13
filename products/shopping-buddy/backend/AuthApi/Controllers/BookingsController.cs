@@ -1,5 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using AuthApi.Extensions;
 using AuthApi.Models;
 using AuthApi.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -22,11 +21,16 @@ public class BookingsController : ControllerBase
     };
 
     private readonly IBookingRepository _bookings;
+    private readonly IUserDocumentRepository _documents;
     private readonly IWebHostEnvironment _environment;
 
-    public BookingsController(IBookingRepository bookings, IWebHostEnvironment environment)
+    public BookingsController(
+        IBookingRepository bookings,
+        IUserDocumentRepository documents,
+        IWebHostEnvironment environment)
     {
         _bookings = bookings;
+        _documents = documents;
         _environment = environment;
     }
 
@@ -37,7 +41,7 @@ public class BookingsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateBookingRequest request)
     {
-        if (!HasRole("Customer"))
+        if (!User.HasRole("Customer"))
         {
             return CustomerRequired();
         }
@@ -56,7 +60,7 @@ public class BookingsController : ControllerBase
             return BadRequest(new { message = "Buddy, venue, date, time slot, and activity type are required." });
         }
 
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         if (userId is null)
         {
             return Unauthorized(new { message = "Could not read your user id from the login token. Sign out and sign in again." });
@@ -86,12 +90,12 @@ public class BookingsController : ControllerBase
     [HttpGet("mine")]
     public async Task<IActionResult> GetMine()
     {
-        if (!HasRole("Customer"))
+        if (!User.HasRole("Customer"))
         {
             return CustomerRequired();
         }
 
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         if (userId is null)
         {
             return Unauthorized();
@@ -111,12 +115,12 @@ public class BookingsController : ControllerBase
     [HttpGet("buddy/incoming")]
     public async Task<IActionResult> GetBuddyIncoming()
     {
-        if (!HasRole("Buddy"))
+        if (!User.HasRole("Buddy"))
         {
             return StatusCode(403, new { message = "Buddy account required. Log in as meera@demo.com." });
         }
 
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         if (userId is null)
         {
             return Unauthorized();
@@ -142,12 +146,12 @@ public class BookingsController : ControllerBase
     [HttpPost("{bookingId}/confirm")]
     public async Task<IActionResult> Confirm(string bookingId)
     {
-        if (!HasRole("Buddy"))
+        if (!User.HasRole("Buddy"))
         {
             return StatusCode(403, new { message = "Buddy account required." });
         }
 
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         if (userId is null)
         {
             return Unauthorized();
@@ -155,6 +159,20 @@ public class BookingsController : ControllerBase
 
         try
         {
+            var hasDocs = await _documents.HasVerifiedDocumentsAsync(
+                userId.Value,
+                DocumentTypes.RequiredForBuddyAccept);
+
+            if (!hasDocs)
+            {
+                return StatusCode(403, new
+                {
+                    message = "Verified Aadhaar and address proof are required before accepting bookings.",
+                    missingDocuments = DocumentTypes.RequiredForBuddyAccept,
+                    profileUrl = "/profile"
+                });
+            }
+
             var ok = await _bookings.ConfirmAsync(bookingId, userId.Value);
             return ok ? Ok(new { message = "Booking confirmed." }) : NotFound(new { message = "Pending booking not found." });
         }
@@ -167,12 +185,12 @@ public class BookingsController : ControllerBase
     [HttpPost("{bookingId}/reject")]
     public async Task<IActionResult> Reject(string bookingId, [FromBody] RejectBookingRequest request)
     {
-        if (!HasRole("Buddy"))
+        if (!User.HasRole("Buddy"))
         {
             return StatusCode(403, new { message = "Buddy account required." });
         }
 
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         if (userId is null)
         {
             return Unauthorized();
@@ -202,10 +220,38 @@ public class BookingsController : ControllerBase
         }
     }
 
-    private bool HasRole(string role) =>
-        User.Claims.Any(c =>
-            (c.Type == ClaimTypes.Role || c.Type == "role") &&
-            string.Equals(c.Value, role, StringComparison.OrdinalIgnoreCase));
+    [HttpPost("{bookingId}/cancel")]
+    public async Task<IActionResult> Cancel(string bookingId)
+    {
+        if (!User.HasRole("Customer"))
+        {
+            return CustomerRequired();
+        }
+
+        var userId = User.GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            var ok = await _bookings.CancelAsync(bookingId, userId.Value);
+            if (!ok)
+            {
+                return BadRequest(new
+                {
+                    message = "Could not cancel booking. Only PendingBuddy or Confirmed trips can be cancelled."
+                });
+            }
+
+            return Ok(new { message = "Booking cancelled." });
+        }
+        catch (Exception ex)
+        {
+            return DatabaseError("cancelling booking", ex);
+        }
+    }
 
     private IActionResult CustomerRequired() =>
         StatusCode(403, new
@@ -219,14 +265,4 @@ public class BookingsController : ControllerBase
             message = $"Database error while {action}.",
             detail = _environment.IsDevelopment() ? ex.Message : null
         });
-
-    private int? GetUserId()
-    {
-        var userIdClaim = User.Claims.FirstOrDefault(c =>
-            c.Type == ClaimTypes.NameIdentifier ||
-            c.Type == JwtRegisteredClaimNames.Sub ||
-            c.Type == "sub")?.Value;
-
-        return int.TryParse(userIdClaim, out var userId) ? userId : null;
-    }
 }
