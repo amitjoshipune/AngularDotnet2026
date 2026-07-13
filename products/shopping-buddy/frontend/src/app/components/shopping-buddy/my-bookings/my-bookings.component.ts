@@ -70,6 +70,26 @@ export class MyBookingsComponent implements OnInit {
     if (status === 'RejectedByBuddy') {
       return 'Rejected by buddy';
     }
+    if (status === 'Cancelled') {
+      return 'Cancelled';
+    }
     return status;
+  }
+
+  canCancel(status: string): boolean {
+    return status === 'PendingBuddy' || status === 'Confirmed';
+  }
+
+  cancel(bookingId: string): void {
+    if (!confirm('Cancel this booking?')) {
+      return;
+    }
+
+    this.buddyService.cancelBooking(bookingId).subscribe({
+      next: () => this.loadBookings(),
+      error: (err: { error?: { message?: string } }) => {
+        this.errorMessage = err?.error?.message || 'Could not cancel booking.';
+      },
+    });
   }
 }

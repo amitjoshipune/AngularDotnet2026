@@ -1,0 +1,165 @@
+<div class="mb-4">
+  <a routerLink="/shopping" class="btn btn-link btn-lg ps-0 text-decoration-none">&larr; Back to home</a>
+  <h1 class="h2 fw-bold mb-1">My profile</h1>
+  <p class="text-muted buddy-subtitle" *ngIf="profile">
+  Signed in as <strong>{{ profile.email }}</strong> ({{ auth.getRolesLabel() }})
+  </p>
+</div>
+
+<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+<div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+<div *ngIf="isLoading" class="text-center py-5">
+  <div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div *ngIf="!isLoading && profile" class="row g-4">
+  <div class="col-lg-7">
+    <section class="card shadow-sm border-0 mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 mb-3">Account details</h2>
+        <form (ngSubmit)="saveProfile()" #profileForm="ngForm" novalidate>
+          <div class="mb-3">
+            <label class="form-label" for="displayName">Display name</label>
+            <input id="displayName" name="displayName" class="form-control form-control-lg" [(ngModel)]="displayName" required />
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="phone">Phone</label>
+              <input id="phone" name="phone" class="form-control" [(ngModel)]="phone" placeholder="+91..." />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="dob">Date of birth</label>
+              <input id="dob" name="dob" type="date" class="form-control" [(ngModel)]="dateOfBirth" />
+            </div>
+          </div>
+          <div class="mb-3 mt-3">
+            <label class="form-label" for="gender">Gender</label>
+            <select id="gender" name="gender" class="form-select" [(ngModel)]="gender">
+              <option value="">Select</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="ecName">Emergency contact name</label>
+              <input id="ecName" name="ecName" class="form-control" [(ngModel)]="emergencyContactName" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="ecPhone">Emergency contact phone</label>
+              <input id="ecPhone" name="ecPhone" class="form-control" [(ngModel)]="emergencyContactPhone" />
+            </div>
+          </div>
+          <div class="mb-3 mt-3">
+            <label class="form-label" for="bio">About you</label>
+            <textarea id="bio" name="bio" class="form-control" rows="3" [(ngModel)]="bio"></textarea>
+          </div>
+
+          <h3 class="h6 mt-4 mb-3">Addresses</h3>
+          <div class="border rounded p-3 mb-3" *ngFor="let address of addresses; let i = index">
+            <div class="row g-2">
+              <div class="col-md-4">
+                <input class="form-control" [(ngModel)]="address.label" [name]="'label' + i" placeholder="Label" />
+              </div>
+              <div class="col-md-8">
+                <input class="form-control" [(ngModel)]="address.line1" [name]="'line1' + i" placeholder="Address line 1" required />
+              </div>
+              <div class="col-12">
+                <input class="form-control" [(ngModel)]="address.line2" [name]="'line2' + i" placeholder="Address line 2 (optional)" />
+              </div>
+              <div class="col-md-4">
+                <input class="form-control" [(ngModel)]="address.city" [name]="'city' + i" placeholder="City" />
+              </div>
+              <div class="col-md-4">
+                <input class="form-control" [(ngModel)]="address.state" [name]="'state' + i" placeholder="State" />
+              </div>
+              <div class="col-md-4">
+                <input class="form-control" [(ngModel)]="address.pincode" [name]="'pincode' + i" placeholder="Pincode" />
+              </div>
+              <div class="col-12 d-flex justify-content-between align-items-center">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="address.isDefault" [name]="'default' + i" [id]="'default' + i" />
+                  <label class="form-check-label" [for]="'default' + i">Default address</label>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger" *ngIf="addresses.length > 1" (click)="removeAddress(i)">Remove</button>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline-secondary btn-sm mb-3" (click)="addAddress()">Add address</button>
+
+          <button type="submit" class="btn btn-primary btn-lg" [disabled]="isSaving || profileForm.invalid">
+            {{ isSaving ? 'Saving...' : 'Save profile' }}
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <section class="card shadow-sm border-0" *ngIf="auth.hasRole('Customer') && !auth.hasRole('Buddy')">
+      <div class="card-body p-4">
+        <h2 class="h5 mb-2">Become a shopping buddy</h2>
+        <p class="text-muted small">Apply to help others shop in Pune. Upload ID proofs first.</p>
+        <p class="small" *ngIf="profile.buddyApplicationStatus !== 'None'">
+          Status: <strong>{{ profile.buddyApplicationStatus }}</strong>
+        </p>
+        <div class="mb-3">
+          <label class="form-label" for="buddyLocality">Preferred locality</label>
+          <select id="buddyLocality" class="form-select" [(ngModel)]="buddyLocalityId">
+            <option value="">Select locality</option>
+            <option *ngFor="let loc of localities" [value]="loc.id">{{ loc.name }}</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="buddyBio">Why you want to be a buddy</label>
+          <textarea id="buddyBio" class="form-control" rows="3" [(ngModel)]="buddyBio"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="buddyNotes">Notes (optional)</label>
+          <input id="buddyNotes" class="form-control" [(ngModel)]="buddyNotes" />
+        </div>
+        <button type="button" class="btn btn-outline-primary" [disabled]="isApplying || !buddyLocalityId || !buddyBio.trim()" (click)="applyBuddy()">
+          {{ isApplying ? 'Submitting...' : 'Submit application' }}
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div class="col-lg-5">
+    <section class="card shadow-sm border-0 mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 mb-3">ID verification</h2>
+        <div *ngIf="verification && !verification.canAcceptBookings" class="alert alert-warning py-2 small">
+          Buddies need verified <strong>Aadhaar</strong> and <strong>Address proof</strong> before accepting bookings.
+          Missing: {{ verification.missingDocuments.join(', ') || 'none listed' }}
+        </div>
+        <div *ngIf="verification?.canAcceptBookings" class="alert alert-success py-2 small">
+          Required ID documents are verified.
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="docType">Document type</label>
+          <select id="docType" class="form-select" [(ngModel)]="selectedDocType">
+            <option *ngFor="let type of documentTypes" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="docFile">Upload file (PDF/JPG/PNG)</label>
+          <input id="docFile" type="file" class="form-control" (change)="onFileSelected($event)" [disabled]="isUploading" />
+          <div class="form-text">In Development, uploads are auto-verified.</div>
+        </div>
+
+        <ul class="list-group list-group-flush" *ngIf="verification?.documents?.length">
+          <li class="list-group-item px-0 d-flex justify-content-between align-items-center" *ngFor="let doc of verification?.documents">
+            <div>
+              <strong>{{ doc.documentType }}</strong>
+              <div class="small text-muted">{{ doc.fileName }}</div>
+            </div>
+            <span class="badge rounded-pill" [ngClass]="docStatusClass(doc.status)">{{ doc.status }}</span>
+          </li>
+        </ul>
+        <p class="text-muted small mb-0" *ngIf="!verification?.documents?.length">No documents uploaded yet.</p>
+      </div>
+    </section>
+  </div>
+</div>

@@ -62,6 +62,43 @@ public sealed class UserRepository : IUserRepository
         return user;
     }
 
+    public async Task<UserRecord?> FindByIdAsync(int userId)
+    {
+        const string sql = """
+            SELECT UserId, Email, Password, DisplayName, Role, EmailVerified
+            FROM dbo.Users
+            WHERE UserId = @UserId AND IsActive = 1
+            """;
+
+        using var connection = _connectionFactory.CreateConnection();
+        var user = await connection.QuerySingleOrDefaultAsync<UserRecord>(sql, new { UserId = userId });
+        if (user is null)
+        {
+            return null;
+        }
+
+        user.Roles = (await GetRolesForUserAsync(connection, user.UserId)).ToList();
+        if (user.Roles.Count == 0)
+        {
+            user.Roles.Add(user.Role);
+        }
+
+        return user;
+    }
+
+    public async Task UpdateDisplayNameAsync(
+        int userId,
+        string displayName,
+        System.Data.IDbConnection connection,
+        System.Data.IDbTransaction transaction)
+    {
+        const string sql = """
+            UPDATE dbo.Users SET DisplayName = @DisplayName WHERE UserId = @UserId
+            """;
+
+        await connection.ExecuteAsync(sql, new { UserId = userId, DisplayName = displayName }, transaction);
+    }
+
     public async Task<bool> EmailExistsAsync(string email)
     {
         const string sql = """

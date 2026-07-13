@@ -10,4 +10,5 @@ public interface IBookingRepository
     Task<string?> GetBuddyIdForUserAsync(int userId);
     Task<bool> ConfirmAsync(string bookingId, int buddyUserId);
     Task<bool> RejectAsync(string bookingId, int buddyUserId, RejectBookingRequest request);
+    Task<bool> CancelAsync(string bookingId, int customerUserId);
 }

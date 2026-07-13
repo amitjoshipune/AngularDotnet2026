@@ -240,6 +240,26 @@ public sealed class BookingRepository : IBookingRepository
         });
         return rows > 0;
     }
+
+    public async Task<bool> CancelAsync(string bookingId, int customerUserId)
+    {
+        const string sql = """
+            UPDATE dbo.Bookings
+            SET Status = N'Cancelled',
+                CancelledAt = SYSUTCDATETIME()
+            WHERE BookingId = @BookingId
+              AND CustomerUserId = @CustomerUserId
+              AND Status IN (N'PendingBuddy', N'Confirmed')
+            """;
+
+        using var connection = _connectionFactory.CreateConnection();
+        var rows = await connection.ExecuteAsync(sql, new
+        {
+            BookingId = bookingId,
+            CustomerUserId = customerUserId
+        });
+        return rows > 0;
+    }
 }
 
 internal sealed class VenueInfoRow

@@ -172,6 +172,10 @@ export class ShoppingBuddyService {
     return this.http.get<RejectionReason[]>(`${environment.apiUrl}/bookings/rejection-reasons`);
   }
 
+  cancelBooking(bookingId: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiUrl}/bookings/${bookingId}/cancel`, {});
+  }
+
   getLocalityName(id: string): string {
     return PUNE_LOCALITIES.find((l) => l.id === id)?.name ?? id;
   }
