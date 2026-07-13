@@ -15,7 +15,7 @@ export class JwtInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.auth.getAccessToken();
 
-    if (!token || req.url.includes('/auth/login')) {
+    if (!token || this.isPublicAuthRequest(req.url)) {
       return next.handle(req);
     }
 
@@ -24,5 +24,18 @@ export class JwtInterceptor implements HttpInterceptor {
         setHeaders: { Authorization: `Bearer ${token}` },
       })
     );
+  }
+
+  private isPublicAuthRequest(url: string): boolean {
+    const publicPaths = [
+      '/auth/login',
+      '/auth/register',
+      '/auth/verify-email',
+      '/auth/resend-otp',
+      '/auth/forgot-password',
+      '/auth/reset-password',
+      '/auth/forgot-login-id',
+    ];
+    return publicPaths.some((path) => url.includes(path));
   }
 }

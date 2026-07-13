@@ -8,22 +8,43 @@ IF OBJECT_ID(N'dbo.Bookings', N'U') IS NOT NULL DROP TABLE dbo.Bookings;
 IF OBJECT_ID(N'dbo.Buddies', N'U') IS NOT NULL DROP TABLE dbo.Buddies;
 IF OBJECT_ID(N'dbo.Venues', N'U') IS NOT NULL DROP TABLE dbo.Venues;
 IF OBJECT_ID(N'dbo.Localities', N'U') IS NOT NULL DROP TABLE dbo.Localities;
+IF OBJECT_ID(N'dbo.OtpChallenges', N'U') IS NOT NULL DROP TABLE dbo.OtpChallenges;
 IF OBJECT_ID(N'dbo.Users', N'U') IS NOT NULL DROP TABLE dbo.Users;
 GO
 
 CREATE TABLE dbo.Users
 (
-    UserId       INT            IDENTITY(1, 1) NOT NULL,
-    Email        NVARCHAR(256)  NOT NULL,
-    Password     NVARCHAR(128)  NOT NULL,
-    DisplayName  NVARCHAR(100)  NOT NULL,
-    Role         NVARCHAR(20)   NOT NULL,
-    IsActive     BIT            NOT NULL CONSTRAINT DF_Users_IsActive DEFAULT (1),
-    CreatedAt    DATETIME2(0)   NOT NULL CONSTRAINT DF_Users_CreatedAt DEFAULT (SYSUTCDATETIME()),
+    UserId          INT            IDENTITY(1, 1) NOT NULL,
+    Email           NVARCHAR(256)  NOT NULL,
+    Password        NVARCHAR(256)  NOT NULL,
+    DisplayName     NVARCHAR(100)  NOT NULL,
+    Role            NVARCHAR(20)   NOT NULL,
+    EmailVerified   BIT            NOT NULL CONSTRAINT DF_Users_EmailVerified DEFAULT (0),
+    EmailVerifiedAt DATETIME2(0)   NULL,
+    IsActive        BIT            NOT NULL CONSTRAINT DF_Users_IsActive DEFAULT (1),
+    CreatedAt       DATETIME2(0)   NOT NULL CONSTRAINT DF_Users_CreatedAt DEFAULT (SYSUTCDATETIME()),
     CONSTRAINT PK_Users PRIMARY KEY CLUSTERED (UserId),
     CONSTRAINT UQ_Users_Email UNIQUE (Email),
     CONSTRAINT CK_Users_Role CHECK (Role IN (N'Customer', N'Buddy', N'Admin'))
 );
+
+CREATE TABLE dbo.OtpChallenges
+(
+    OtpChallengeId INT            IDENTITY(1, 1) NOT NULL,
+    Email          NVARCHAR(256)  NOT NULL,
+    Code           NVARCHAR(10)   NOT NULL,
+    Purpose        NVARCHAR(30)   NOT NULL,
+    ExpiresAt      DATETIME2(0)   NOT NULL,
+    UsedAt         DATETIME2(0)   NULL,
+    CreatedAt      DATETIME2(0)   NOT NULL CONSTRAINT DF_OtpChallenges_CreatedAt DEFAULT (SYSUTCDATETIME()),
+    CONSTRAINT PK_OtpChallenges PRIMARY KEY CLUSTERED (OtpChallengeId),
+    CONSTRAINT CK_OtpChallenges_Purpose CHECK (
+        Purpose IN (N'EmailVerification', N'PasswordReset', N'ForgotLoginId')
+    )
+);
+
+CREATE NONCLUSTERED INDEX IX_OtpChallenges_Email_Purpose_CreatedAt
+    ON dbo.OtpChallenges (Email, Purpose, CreatedAt DESC);
 
 CREATE TABLE dbo.Localities
 (

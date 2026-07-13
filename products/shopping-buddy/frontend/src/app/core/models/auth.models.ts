@@ -20,6 +20,46 @@ export interface LoginResponse {
   user: AuthUser;
 }
 
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  displayName: string;
+}
+
+export interface RegisterResponse {
+  message: string;
+  email: string;
+  requiresVerification: boolean;
+}
+
+export interface VerifyEmailRequest {
+  email: string;
+  code: string;
+}
+
+export interface ResendOtpRequest {
+  email: string;
+  purpose: 'EmailVerification' | 'PasswordReset' | 'ForgotLoginId';
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  code: string;
+  newPassword: string;
+}
+
+export interface ForgotLoginIdRequest {
+  displayName: string;
+}
+
+export interface MessageResponse {
+  message: string;
+}
+
 export interface JwtPayload {
   sub: string;
   email: string;

@@ -8,7 +8,7 @@ set SCRIPT_DIR=%~dp0
 echo Target server: %SB_SQL_SERVER%
 echo.
 
-echo [1/5] Creating database ...
+echo [1/6] Creating database ...
 sqlcmd -S %SB_SQL_SERVER% -E -i "%SCRIPT_DIR%001_create_database.sql"
 if errorlevel 1 goto :error
 
@@ -28,8 +28,13 @@ if errorlevel 1 (
     echo Enable Mixed Mode and re-run 004_sql_logins.sql in SSMS.
 )
 
-echo [5/5] Booking workflow (UserRoles, PendingBuddy) ...
+echo [5/6] Booking workflow (UserRoles, PendingBuddy) ...
 sqlcmd -S %SB_SQL_SERVER% -E -i "%SCRIPT_DIR%007_booking_workflow.sql"
+
+echo [6/6] Account auth (email verification + OTP) ...
+sqlcmd -S %SB_SQL_SERVER% -E -i "%SCRIPT_DIR%009_account_auth.sql"
+if errorlevel 1 goto :error
+
 echo.
 echo Done. Database ShoppingBuddy is ready on %SB_SQL_SERVER%.
 goto :eof

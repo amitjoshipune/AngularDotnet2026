@@ -31,5 +31,54 @@ public class UserRecord
     public string Password { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    public bool EmailVerified { get; set; }
     public List<string> Roles { get; set; } = new();
+}
+
+public class RegisterRequest
+{
+    public string email { get; set; } = string.Empty;
+    public string password { get; set; } = string.Empty;
+    public string displayName { get; set; } = string.Empty;
+}
+
+public class VerifyEmailRequest
+{
+    public string email { get; set; } = string.Empty;
+    public string code { get; set; } = string.Empty;
+}
+
+public class ResendOtpRequest
+{
+    public string email { get; set; } = string.Empty;
+    public string purpose { get; set; } = string.Empty;
+}
+
+public class ForgotPasswordRequest
+{
+    public string email { get; set; } = string.Empty;
+}
+
+public class ResetPasswordRequest
+{
+    public string email { get; set; } = string.Empty;
+    public string code { get; set; } = string.Empty;
+    public string newPassword { get; set; } = string.Empty;
+}
+
+public class ForgotLoginIdRequest
+{
+    public string displayName { get; set; } = string.Empty;
+}
+
+public class MessageResponse
+{
+    public string message { get; set; } = string.Empty;
+}
+
+public class RegisterResponse
+{
+    public string message { get; set; } = string.Empty;
+    public string email { get; set; } = string.Empty;
+    public bool requiresVerification { get; set; }
 }

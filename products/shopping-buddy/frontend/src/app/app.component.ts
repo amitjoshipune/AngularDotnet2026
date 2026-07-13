@@ -18,7 +18,8 @@ export class AppComponent {
   }
 
   showNavbar(): boolean {
-    return !this.isLoginRoute();
+    const publicAuthRoutes = ['/login', '/register', '/verify-email', '/forgot-password', '/reset-password', '/forgot-login-id'];
+    return !publicAuthRoutes.some((route) => this.router.url.startsWith(route));
   }
 
   isAdmin(): boolean {
