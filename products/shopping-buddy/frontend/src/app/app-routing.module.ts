@@ -1,6 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/auth/login/login.component';
+import { RegisterComponent } from './components/auth/register/register.component';
+import { VerifyEmailComponent } from './components/auth/verify-email/verify-email.component';
+import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/auth/reset-password/reset-password.component';
+import { ForgotLoginIdComponent } from './components/auth/forgot-login-id/forgot-login-id.component';
 import { AdminhomeComponent } from './components/dashboard/adminhome/adminhome.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { HomeRedirectGuard } from './core/guards/home-redirect.guard';
@@ -16,6 +21,11 @@ import { BuddyIncomingComponent } from './components/shopping-buddy/buddy-incomi
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [LoginGuard] },
+  { path: 'verify-email', component: VerifyEmailComponent, canActivate: [LoginGuard] },
+  { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [LoginGuard] },
+  { path: 'reset-password', component: ResetPasswordComponent, canActivate: [LoginGuard] },
+  { path: 'forgot-login-id', component: ForgotLoginIdComponent, canActivate: [LoginGuard] },
   { path: 'shopping/safety', component: SafetyLegalComponent },
   {
     path: 'shopping',

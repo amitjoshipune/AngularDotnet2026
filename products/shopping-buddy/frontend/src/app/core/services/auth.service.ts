@@ -2,7 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AuthUser, LoginRequest, LoginResponse, UserRole } from '../models/auth.models';
+import {
+  AuthUser,
+  ForgotLoginIdRequest,
+  ForgotPasswordRequest,
+  LoginRequest,
+  LoginResponse,
+  MessageResponse,
+  RegisterRequest,
+  RegisterResponse,
+  ResendOtpRequest,
+  ResetPasswordRequest,
+  UserRole,
+  VerifyEmailRequest,
+} from '../models/auth.models';
 import { isTokenExpired } from '../utils/jwt.util';
 import { TokenStorageService } from './token-storage.service';
 
@@ -22,6 +35,32 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, credentials).pipe(
       tap((response) => this.applySession(response))
     );
+  }
+
+  register(payload: RegisterRequest): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${environment.apiUrl}/auth/register`, payload);
+  }
+
+  verifyEmail(payload: VerifyEmailRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/verify-email`, payload).pipe(
+      tap((response) => this.applySession(response))
+    );
+  }
+
+  resendOtp(payload: ResendOtpRequest): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>(`${environment.apiUrl}/auth/resend-otp`, payload);
+  }
+
+  forgotPassword(payload: ForgotPasswordRequest): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>(`${environment.apiUrl}/auth/forgot-password`, payload);
+  }
+
+  resetPassword(payload: ResetPasswordRequest): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>(`${environment.apiUrl}/auth/reset-password`, payload);
+  }
+
+  forgotLoginId(payload: ForgotLoginIdRequest): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>(`${environment.apiUrl}/auth/forgot-login-id`, payload);
   }
 
   logout(): void {

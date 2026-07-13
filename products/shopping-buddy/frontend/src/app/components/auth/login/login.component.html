@@ -27,7 +27,10 @@
         </div>
 
         <div class="mb-4">
-          <label for="password" class="form-label">Password</label>
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label for="password" class="form-label mb-0">Password</label>
+            <a routerLink="/forgot-password" class="small">Forgot password?</a>
+          </div>
           <input
             id="password"
             name="password"
@@ -52,6 +55,12 @@
           </span>
         </button>
       </form>
+
+      <p class="text-center mt-3 mb-0">
+        New here? <a routerLink="/register">Create an account</a>
+        ·
+        <a routerLink="/forgot-login-id" class="small">Forgot login email?</a>
+      </p>
 
       <hr class="my-4" />
 

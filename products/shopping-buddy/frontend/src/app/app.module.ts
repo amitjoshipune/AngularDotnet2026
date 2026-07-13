@@ -25,6 +25,11 @@ import { MyaisComponent } from './components/reports/tester/myais/myais.componen
 import { UserComponent } from './components/user/user.component';
 import { UsersComponent } from './components/users/users.component';
 import { LoginComponent } from './components/auth/login/login.component';
+import { RegisterComponent } from './components/auth/register/register.component';
+import { VerifyEmailComponent } from './components/auth/verify-email/verify-email.component';
+import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/auth/reset-password/reset-password.component';
+import { ForgotLoginIdComponent } from './components/auth/forgot-login-id/forgot-login-id.component';
 import { HomeRedirectComponent } from './components/home-redirect/home-redirect.component';
 import { ItemsComponent } from './components/items/items.component';
 import { ShoppingHomeComponent } from './components/shopping-buddy/shopping-home/shopping-home.component';
@@ -58,6 +63,11 @@ import { MockApiInterceptor } from './core/interceptors/mock-api.interceptor';
     UserComponent,
     UsersComponent,
     LoginComponent,
+    RegisterComponent,
+    VerifyEmailComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
+    ForgotLoginIdComponent,
     HomeRedirectComponent,
     ItemsComponent,
     ShoppingHomeComponent,

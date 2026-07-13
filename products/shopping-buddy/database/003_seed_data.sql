@@ -15,13 +15,13 @@ GO
 
 SET IDENTITY_INSERT dbo.Users ON;
 
-INSERT INTO dbo.Users (UserId, Email, Password, DisplayName, Role)
+INSERT INTO dbo.Users (UserId, Email, Password, DisplayName, Role, EmailVerified, EmailVerifiedAt)
 VALUES
-    (1, N'customer@demo.com', N'Customer@123', N'Sunita Patil', N'Customer'),
-    (2, N'senior@demo.com', N'Senior@123', N'Kamla Deshmukh', N'Customer'),
-    (3, N'meera@demo.com', N'Buddy@123', N'Meera K.', N'Buddy'),
-    (4, N'anjali@demo.com', N'Buddy@123', N'Anjali S.', N'Buddy'),
-    (5, N'admin@example.com', N'Admin@123', N'Admin User', N'Admin');
+    (1, N'customer@demo.com', N'Customer@123', N'Sunita Patil', N'Customer', 1, SYSUTCDATETIME()),
+    (2, N'senior@demo.com', N'Senior@123', N'Kamla Deshmukh', N'Customer', 1, SYSUTCDATETIME()),
+    (3, N'meera@demo.com', N'Buddy@123', N'Meera K.', N'Buddy', 1, SYSUTCDATETIME()),
+    (4, N'anjali@demo.com', N'Buddy@123', N'Anjali S.', N'Buddy', 1, SYSUTCDATETIME()),
+    (5, N'admin@example.com', N'Admin@123', N'Admin User', N'Admin', 1, SYSUTCDATETIME());
 
 SET IDENTITY_INSERT dbo.Users OFF;
 

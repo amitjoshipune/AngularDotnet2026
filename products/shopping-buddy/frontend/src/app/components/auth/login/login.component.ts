@@ -61,6 +61,10 @@ export class LoginComponent implements OnInit {
             'The authentication API is currently unavailable. Start AuthApi (dotnet run) and ensure the database scripts have been run.';
         } else if (err?.status === 503) {
           this.errorMessage = message || 'Database is unavailable. Run products/shopping-buddy/database/run-all.bat first.';
+        } else if (err?.status === 403 && err?.error?.requiresVerification) {
+          this.router.navigate(['/verify-email'], {
+            queryParams: { email: err.error.email || this.email.trim() },
+          });
         } else if (message) {
           this.errorMessage = message;
         } else {

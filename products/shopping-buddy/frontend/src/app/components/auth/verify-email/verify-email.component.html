@@ -1,0 +1,75 @@
+<div class="auth-page">
+  <div class="auth-card card shadow-lg border-0">
+    <div class="card-body p-4 p-md-5">
+      <div class="text-center mb-4">
+        <div class="auth-logo mb-3">SB</div>
+        <h1 class="h3 mb-1">Verify your email</h1>
+        <p class="text-muted mb-0">Enter the 6-digit code we sent you</p>
+      </div>
+
+      <div class="dev-hint mb-3 text-muted">
+        {{ infoMessage }}
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger py-2" role="alert">
+        {{ errorMessage }}
+      </div>
+
+      <form (ngSubmit)="onSubmit()" #verifyForm="ngForm" novalidate>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            class="form-control form-control-lg"
+            [(ngModel)]="email"
+            required
+            autocomplete="username"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="code" class="form-label">Verification code</label>
+          <input
+            id="code"
+            name="code"
+            type="text"
+            class="form-control form-control-lg text-center letter-spacing"
+            [(ngModel)]="code"
+            required
+            maxlength="6"
+            inputmode="numeric"
+            placeholder="123456"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg w-100 mb-2"
+          [disabled]="isSubmitting || verifyForm.invalid"
+        >
+          <span *ngIf="!isSubmitting">Verify &amp; continue</span>
+          <span *ngIf="isSubmitting">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Verifying...
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary w-100"
+          (click)="resendCode()"
+          [disabled]="isResending || !email"
+        >
+          <span *ngIf="!isResending">Resend code</span>
+          <span *ngIf="isResending">Sending...</span>
+        </button>
+      </form>
+
+      <p class="text-center mt-4 mb-0">
+        <a routerLink="/login">Back to sign in</a>
+      </p>
+    </div>
+  </div>
+</div>
