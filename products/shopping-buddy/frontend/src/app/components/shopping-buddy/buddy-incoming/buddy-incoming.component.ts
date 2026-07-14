@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import {
   BuddyIncomingBooking,
   RejectionReason,
   ShoppingBuddyService,
 } from '../../../core/services/shopping-buddy.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { UserProfileService } from '../../../core/services/user-profile.service';
-import { VerificationStatus } from '../../../core/models/user-profile.models';
 
 @Component({
   selector: 'app-buddy-incoming',
@@ -17,7 +14,6 @@ import { VerificationStatus } from '../../../core/models/user-profile.models';
 export class BuddyIncomingComponent implements OnInit {
   bookings: BuddyIncomingBooking[] = [];
   rejectionReasons: RejectionReason[] = [];
-  verification: VerificationStatus | null = null;
   isLoading = false;
   errorMessage = '';
   infoMessage = '';
@@ -29,8 +25,6 @@ export class BuddyIncomingComponent implements OnInit {
 
   constructor(
     private readonly buddyService: ShoppingBuddyService,
-    private readonly profileService: UserProfileService,
-    private readonly router: Router,
     readonly auth: AuthService
   ) {}
 
@@ -42,9 +36,6 @@ export class BuddyIncomingComponent implements OnInit {
 
     this.buddyService.getRejectionReasons().subscribe({
       next: (reasons) => (this.rejectionReasons = reasons),
-    });
-    this.profileService.getVerificationStatus().subscribe({
-      next: (status) => (this.verification = status),
     });
     this.loadBookings();
   }
@@ -66,33 +57,17 @@ export class BuddyIncomingComponent implements OnInit {
   }
 
   confirm(bookingId: string): void {
-    if (this.verification && !this.verification.canAcceptBookings) {
-      this.errorMessage =
-        'Upload and verify Aadhaar + address proof on your profile before accepting bookings.';
-      return;
-    }
-
     this.isSubmitting = true;
     this.buddyService.confirmBooking(bookingId).subscribe({
       next: () => {
         this.isSubmitting = false;
         this.loadBookings();
       },
-      error: (err: { error?: { message?: string }; status?: number }) => {
+      error: (err: { error?: { message?: string } }) => {
         this.isSubmitting = false;
-        if (err?.status === 403) {
-          this.errorMessage =
-            err?.error?.message ||
-            'Verified ID documents required. Go to My profile → ID verification.';
-        } else {
-          this.errorMessage = err?.error?.message || 'Could not confirm booking.';
-        }
+        this.errorMessage = err?.error?.message || 'Could not confirm booking.';
       },
     });
-  }
-
-  goToProfile(): void {
-    this.router.navigate(['/profile']);
   }
 
   openReject(bookingId: string): void {

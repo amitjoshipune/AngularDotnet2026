@@ -20,6 +20,7 @@ export interface UserMe {
   emergencyContactName?: string;
   emergencyContactPhone?: string;
   bio?: string;
+  profilePhotoUrl?: string;
   buddyApplicationStatus: string;
   buddyApplicationNotes?: string;
   buddyLocalityId?: string;
@@ -27,6 +28,7 @@ export interface UserMe {
 }
 
 export interface UpdateUserMeRequest {
+  updateScope?: 'basic' | 'advanced' | 'all';
   displayName: string;
   phone?: string;
   dateOfBirth?: string;
@@ -34,7 +36,8 @@ export interface UpdateUserMeRequest {
   emergencyContactName?: string;
   emergencyContactPhone?: string;
   bio?: string;
-  addresses: UserAddress[];
+  profilePhotoUrl?: string;
+  addresses?: UserAddress[];
 }
 
 export interface BuddyApplyRequest {
@@ -57,4 +60,11 @@ export interface VerificationStatus {
   canAcceptBookings: boolean;
   missingDocuments: string[];
   documents: UserDocument[];
+  note?: string;
+}
+
+export interface ProfilePhotoUploadResponse {
+  message: string;
+  profilePhotoUrl: string;
+  profile: UserMe;
 }

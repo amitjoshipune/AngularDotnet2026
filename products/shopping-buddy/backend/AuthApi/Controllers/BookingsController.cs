@@ -159,18 +159,21 @@ public class BookingsController : ControllerBase
 
         try
         {
-            var hasDocs = await _documents.HasVerifiedDocumentsAsync(
-                userId.Value,
-                DocumentTypes.RequiredForBuddyAccept);
-
-            if (!hasDocs)
+            if (DocumentTypes.EnforceBuddyDocumentGate)
             {
-                return StatusCode(403, new
+                var hasDocs = await _documents.HasVerifiedDocumentsAsync(
+                    userId.Value,
+                    DocumentTypes.RequiredForBuddyAccept);
+
+                if (!hasDocs)
                 {
-                    message = "Verified Aadhaar and address proof are required before accepting bookings.",
-                    missingDocuments = DocumentTypes.RequiredForBuddyAccept,
-                    profileUrl = "/profile"
-                });
+                    return StatusCode(403, new
+                    {
+                        message = "Verified Aadhaar and address proof are required before accepting bookings.",
+                        missingDocuments = DocumentTypes.RequiredForBuddyAccept,
+                        profileUrl = "/profile"
+                    });
+                }
             }
 
             var ok = await _bookings.ConfirmAsync(bookingId, userId.Value);
