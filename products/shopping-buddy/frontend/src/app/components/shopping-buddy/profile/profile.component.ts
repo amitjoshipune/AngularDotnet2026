@@ -88,9 +88,7 @@ export class ProfileComponent implements OnInit {
     this.emergencyContactName = profile.emergencyContactName || '';
     this.emergencyContactPhone = profile.emergencyContactPhone || '';
     this.bio = profile.bio || '';
-    this.addresses = profile.addresses?.length
-      ? [...profile.addresses]
-      : [{ label: 'Home', line1: '', city: 'Pune', state: 'Maharashtra', pincode: '', isDefault: true }];
+    this.addresses = profile.addresses?.length ? [...profile.addresses] : [];
     this.buddyLocalityId = profile.buddyLocalityId || '';
     this.buddyBio = profile.bio || '';
   }
@@ -107,9 +105,11 @@ export class ProfileComponent implements OnInit {
   }
 
   removeAddress(index: number): void {
-    if (this.addresses.length > 1) {
-      this.addresses.splice(index, 1);
-    }
+    this.addresses.splice(index, 1);
+  }
+
+  canSave(): boolean {
+    return this.displayName.trim().length > 0;
   }
 
   saveProfile(): void {
