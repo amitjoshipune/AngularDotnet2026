@@ -106,7 +106,7 @@ public class UsersController : ControllerBase
 
             return Ok(new
             {
-                message = "Application submitted. Upload Aadhaar and address proof under Verification, then wait for admin approval."
+                message = "Application submitted. We will review and contact you. ID upload is optional for now."
             });
         }
         catch (Exception ex)
@@ -196,10 +196,40 @@ public class UsersController : ControllerBase
         }
     }
 
+    [HttpPost("me/profile-photo")]
+    [RequestSizeLimit(2 * 1024 * 1024)]
+    public async Task<IActionResult> UploadProfilePhoto(IFormFile? file)
+    {
+        var userId = User.GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        if (file is null || file.Length == 0)
+        {
+            return BadRequest(new { message = "Photo file is required." });
+        }
+
+        try
+        {
+            await using var stream = file.OpenReadStream();
+            var storagePath = await _storage.SaveAsync(userId.Value, "ProfilePhoto", file.FileName, stream);
+            var publicUrl = "/" + storagePath.TrimStart('/');
+            await _profiles.UpdateProfilePhotoAsync(userId.Value, publicUrl);
+            var profile = await _profiles.GetMeAsync(userId.Value);
+            return Ok(new { message = "Profile photo updated.", profilePhotoUrl = publicUrl, profile });
+        }
+        catch (Exception ex)
+        {
+            return DatabaseError("uploading profile photo", ex);
+        }
+    }
+
     private ObjectResult DatabaseError(string action, Exception ex) =>
         StatusCode(503, new
         {
-            message = $"Database error while {action}. Run migrations 010 and 011 if tables are missing.",
+            message = $"Database error while {action}. Run migrations 010–012 in SSMS if tables or columns are missing.",
             detail = _environment.IsDevelopment() ? ex.Message : null
         });
 }

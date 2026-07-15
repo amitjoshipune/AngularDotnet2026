@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   BuddyApplyRequest,
+  ProfilePhotoUploadResponse,
   UpdateUserMeRequest,
   UserDocument,
   UserMe,
@@ -22,6 +23,12 @@ export class UserProfileService {
 
   updateMe(payload: UpdateUserMeRequest): Observable<UserMe> {
     return this.http.put<UserMe>(`${this.baseUrl}/me`, payload);
+  }
+
+  uploadProfilePhoto(file: File): Observable<ProfilePhotoUploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<ProfilePhotoUploadResponse>(`${this.baseUrl}/me/profile-photo`, formData);
   }
 
   applyBuddy(payload: BuddyApplyRequest): Observable<{ message: string }> {

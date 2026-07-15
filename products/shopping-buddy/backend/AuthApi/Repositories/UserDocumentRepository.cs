@@ -99,9 +99,10 @@ public sealed class UserDocumentRepository : IUserDocumentRepository
 
         return new VerificationStatusDto
         {
-            canAcceptBookings = missing.Count == 0,
+            canAcceptBookings = true,
             missingDocuments = missing,
-            documents = documents.ToList()
+            documents = documents.ToList(),
+            note = "ID documents are optional in this MVP build. Upload when ready."
         };
     }
 }

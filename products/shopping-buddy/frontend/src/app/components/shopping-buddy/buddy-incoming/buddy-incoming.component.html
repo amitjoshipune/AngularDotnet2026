@@ -1,5 +1,5 @@
 <div class="mb-4">
-  <a routerLink="/shopping" class="btn btn-link btn-lg ps-0 text-decoration-none">&larr; Back to home</a>
+  <a routerLink="/shopping" class="btn btn-link ps-0 text-decoration-none">&larr; Back to home</a>
   <h1 class="h2 fw-bold mb-1">Buddy requests</h1>
   <p class="text-muted buddy-subtitle">
     Customers who want to book you. Confirm or reject each request.
@@ -9,20 +9,14 @@
   </p>
 </div>
 
-<div *ngIf="infoMessage" class="alert alert-warning">{{ infoMessage }}</div>
-<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-
-<div *ngIf="verification && !verification.canAcceptBookings" class="alert alert-warning">
-  <strong>ID verification required.</strong>
-  Upload verified Aadhaar and address proof before confirming requests.
-  <button type="button" class="btn btn-sm btn-outline-dark ms-2" (click)="goToProfile()">Go to profile</button>
-</div>
+<div *ngIf="infoMessage" class="alert alert-warning py-2">{{ infoMessage }}</div>
+<div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
 
 <div *ngIf="isLoading" class="text-center py-5">
   <div class="spinner-border text-primary" role="status"></div>
 </div>
 
-<div *ngIf="!isLoading && bookings.length === 0 && !infoMessage && !errorMessage" class="alert alert-info">
+<div *ngIf="!isLoading && bookings.length === 0 && !infoMessage && !errorMessage" class="alert alert-info py-2">
   No booking requests yet.
 </div>
 
@@ -44,15 +38,15 @@
         <div class="d-flex gap-2 flex-wrap" *ngIf="booking.status === 'PendingBuddy'">
           <button
             type="button"
-            class="btn btn-success btn-lg"
-            [disabled]="isSubmitting || (verification && !verification.canAcceptBookings)"
+            class="btn btn-success btn-sm"
+            [disabled]="isSubmitting"
             (click)="confirm(booking.bookingId)"
           >
             Confirm
           </button>
           <button
             type="button"
-            class="btn btn-outline-danger btn-lg"
+            class="btn btn-outline-danger btn-sm"
             [disabled]="isSubmitting"
             (click)="openReject(booking.bookingId)"
           >
@@ -69,7 +63,7 @@
     <h2 class="h5 mb-3">Reject booking {{ rejectBookingId }}</h2>
     <div class="mb-3">
       <label class="form-label" for="reasonCode">Reason</label>
-      <select id="reasonCode" class="form-select form-select-lg" [(ngModel)]="rejectReasonCode">
+      <select id="reasonCode" class="form-select form-select-sm" [(ngModel)]="rejectReasonCode">
         <option value="">Select a reason</option>
         <option *ngFor="let reason of rejectionReasons" [value]="reason.code">{{ reason.label }}</option>
       </select>
@@ -78,17 +72,17 @@
       <label class="form-label" for="reasonText">Please explain</label>
       <textarea
         id="reasonText"
-        class="form-control form-control-lg"
+        class="form-control form-control-sm"
         rows="3"
         [(ngModel)]="rejectReasonText"
         placeholder="Type your reason"
       ></textarea>
     </div>
     <div class="d-flex gap-2">
-      <button type="button" class="btn btn-danger btn-lg" [disabled]="isSubmitting" (click)="submitReject()">
+      <button type="button" class="btn btn-danger btn-sm" [disabled]="isSubmitting" (click)="submitReject()">
         Submit rejection
       </button>
-      <button type="button" class="btn btn-outline-secondary btn-lg" (click)="cancelReject()">Cancel</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelReject()">Cancel</button>
     </div>
   </div>
 </div>

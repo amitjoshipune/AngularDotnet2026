@@ -7,6 +7,9 @@ public static class DocumentTypes
     public const string Pan = "PAN";
 
     public static readonly string[] RequiredForBuddyAccept = [Aadhaar, AddressProof];
+
+    /** MVP: ID upload is optional; gate disabled until legal review. */
+    public static readonly bool EnforceBuddyDocumentGate = false;
 }
 
 public static class DocumentStatus
@@ -40,6 +43,7 @@ public class UserMeDto
     public string? emergencyContactName { get; set; }
     public string? emergencyContactPhone { get; set; }
     public string? bio { get; set; }
+    public string? profilePhotoUrl { get; set; }
     public string buddyApplicationStatus { get; set; } = "None";
     public string? buddyApplicationNotes { get; set; }
     public string? buddyLocalityId { get; set; }
@@ -48,6 +52,8 @@ public class UserMeDto
 
 public class UpdateUserMeRequest
 {
+    /** basic = name/phone/bio/photo only; advanced = emergency/address/dob; all = everything */
+    public string updateScope { get; set; } = "all";
     public string displayName { get; set; } = string.Empty;
     public string? phone { get; set; }
     public string? dateOfBirth { get; set; }
@@ -55,6 +61,7 @@ public class UpdateUserMeRequest
     public string? emergencyContactName { get; set; }
     public string? emergencyContactPhone { get; set; }
     public string? bio { get; set; }
+    public string? profilePhotoUrl { get; set; }
     public List<UserAddressDto> addresses { get; set; } = new();
 }
 
@@ -78,7 +85,9 @@ public class UserDocumentDto
 
 public class VerificationStatusDto
 {
-    public bool canAcceptBookings { get; set; }
+    /** True when buddy may accept bookings. MVP: always true (ID optional). */
+    public bool canAcceptBookings { get; set; } = true;
     public List<string> missingDocuments { get; set; } = new();
     public List<UserDocumentDto> documents { get; set; } = new();
+    public string note { get; set; } = "ID documents are optional in this MVP build.";
 }

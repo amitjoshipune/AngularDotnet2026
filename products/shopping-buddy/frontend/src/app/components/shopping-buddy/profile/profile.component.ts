@@ -22,9 +22,12 @@ export class ProfileComponent implements OnInit {
   localities: PuneLocality[] = [];
 
   isLoading = true;
-  isSaving = false;
+  isSavingBasic = false;
+  isSavingAdvanced = false;
   isApplying = false;
-  isUploading = false;
+  isUploadingPhoto = false;
+  isUploadingDoc = false;
+  showAdvanced = false;
   errorMessage = '';
   successMessage = '';
 
@@ -35,6 +38,7 @@ export class ProfileComponent implements OnInit {
   emergencyContactName = '';
   emergencyContactPhone = '';
   bio = '';
+  profilePhotoUrl = '';
   addresses: UserAddress[] = [];
 
   buddyLocalityId = '';
@@ -71,7 +75,7 @@ export class ProfileComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage =
           err?.error?.message ||
-          'Could not load profile. Run SQL migrations 010 and 011, then restart the API.';
+          'Could not load profile. Run SQL migrations 010–012 in SSMS, then restart the API.';
       },
     });
 
@@ -88,14 +92,31 @@ export class ProfileComponent implements OnInit {
     this.emergencyContactName = profile.emergencyContactName || '';
     this.emergencyContactPhone = profile.emergencyContactPhone || '';
     this.bio = profile.bio || '';
+    this.profilePhotoUrl = profile.profilePhotoUrl || '';
     this.addresses = profile.addresses?.length ? [...profile.addresses] : [];
     this.buddyLocalityId = profile.buddyLocalityId || '';
     this.buddyBio = profile.bio || '';
+    this.showAdvanced =
+      !!profile.dateOfBirth ||
+      !!profile.gender ||
+      !!profile.emergencyContactName ||
+      !!profile.emergencyContactPhone ||
+      (profile.addresses?.length ?? 0) > 0;
+  }
+
+  photoSrc(): string | null {
+    if (!this.profilePhotoUrl) {
+      return null;
+    }
+    if (this.profilePhotoUrl.startsWith('http')) {
+      return this.profilePhotoUrl;
+    }
+    return this.profilePhotoUrl;
   }
 
   addAddress(): void {
     this.addresses.push({
-      label: 'Other',
+      label: 'Home',
       line1: '',
       city: 'Pune',
       state: 'Maharashtra',
@@ -108,42 +129,91 @@ export class ProfileComponent implements OnInit {
     this.addresses.splice(index, 1);
   }
 
-  canSave(): boolean {
+  canSaveBasic(): boolean {
     return this.displayName.trim().length > 0;
   }
 
-  saveProfile(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
-    this.isSaving = true;
+  saveBasic(): void {
+    this.clearMessages();
+    this.isSavingBasic = true;
 
     const payload: UpdateUserMeRequest = {
+      updateScope: 'basic',
       displayName: this.displayName.trim(),
       phone: this.phone.trim() || undefined,
+      bio: this.bio.trim() || undefined,
+    };
+
+    this.profileService.updateMe(payload).subscribe({
+      next: (profile) => {
+        this.profile = profile;
+        this.displayName = profile.displayName;
+        this.isSavingBasic = false;
+        this.successMessage = 'Basic profile saved.';
+      },
+      error: (err) => {
+        this.isSavingBasic = false;
+        this.errorMessage = err?.error?.message || 'Could not save basic profile.';
+      },
+    });
+  }
+
+  saveAdvanced(): void {
+    this.clearMessages();
+    this.isSavingAdvanced = true;
+
+    const payload: UpdateUserMeRequest = {
+      updateScope: 'advanced',
+      displayName: this.displayName.trim() || 'User',
       dateOfBirth: this.dateOfBirth || undefined,
       gender: this.gender || undefined,
       emergencyContactName: this.emergencyContactName.trim() || undefined,
       emergencyContactPhone: this.emergencyContactPhone.trim() || undefined,
-      bio: this.bio.trim() || undefined,
       addresses: this.addresses.filter((a) => a.line1.trim()),
     };
 
     this.profileService.updateMe(payload).subscribe({
       next: (profile) => {
         this.profile = profile;
-        this.isSaving = false;
-        this.successMessage = 'Profile saved.';
+        this.bindForm(profile);
+        this.isSavingAdvanced = false;
+        this.successMessage = 'Advanced details saved.';
       },
       error: (err) => {
-        this.isSaving = false;
-        this.errorMessage = err?.error?.message || 'Could not save profile.';
+        this.isSavingAdvanced = false;
+        this.errorMessage = err?.error?.message || 'Could not save advanced details.';
+      },
+    });
+  }
+
+  onPhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    this.clearMessages();
+    this.isUploadingPhoto = true;
+
+    this.profileService.uploadProfilePhoto(file).subscribe({
+      next: (response) => {
+        this.isUploadingPhoto = false;
+        this.profile = response.profile;
+        this.profilePhotoUrl = response.profilePhotoUrl;
+        this.successMessage = response.message;
+        input.value = '';
+      },
+      error: (err) => {
+        this.isUploadingPhoto = false;
+        this.errorMessage = err?.error?.message || 'Photo upload failed.';
+        input.value = '';
       },
     });
   }
 
   applyBuddy(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.clearMessages();
     this.isApplying = true;
 
     const payload: BuddyApplyRequest = {
@@ -172,13 +242,12 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    this.isUploading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.clearMessages();
+    this.isUploadingDoc = true;
 
     this.profileService.uploadDocument(this.selectedDocType, file).subscribe({
       next: (response) => {
-        this.isUploading = false;
+        this.isUploadingDoc = false;
         this.successMessage = response.message;
         input.value = '';
         this.profileService.getVerificationStatus().subscribe({
@@ -186,7 +255,7 @@ export class ProfileComponent implements OnInit {
         });
       },
       error: (err) => {
-        this.isUploading = false;
+        this.isUploadingDoc = false;
         this.errorMessage = err?.error?.message || 'Upload failed.';
         input.value = '';
       },
@@ -201,5 +270,10 @@ export class ProfileComponent implements OnInit {
       return 'bg-danger';
     }
     return 'bg-warning text-dark';
+  }
+
+  private clearMessages(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
   }
 }
