@@ -2,6 +2,7 @@
 REM Run all ShoppingBuddy SQL scripts against SQL Server.
 REM Default: DESKTOP-J5AN1SG\SQLEXPRESS (override with set SB_SQL_SERVER=your\instance)
 
+REM if "%SB_SQL_SERVER%"=="" set SB_SQL_SERVER=DESKTOP-J5AN1SG\SQLEXPRESS
 if "%SB_SQL_SERVER%"=="" set SB_SQL_SERVER=DESKTOP-J5AN1SG\SQLEXPRESS
 set SCRIPT_DIR=%~dp0
 
