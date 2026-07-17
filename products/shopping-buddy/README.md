@@ -52,6 +52,12 @@ reinstall-frontend.bat
 
 That script stops Node, removes `node_modules` and `.angular`, runs `npm ci`, verifies `http.mjs` exists, and runs a test build.
 
+If `verify:deps` passes but `ng build` still fails with hundreds of `rxjs` / `@angular/common` errors, packages were **half-downloaded** (slow network). Try the lighter repair first:
+
+```bat
+repair-frontend-deps.bat
+```
+
 Open http://localhost:4300/login
 
 **Demo logins:** `customer@demo.com` / `Customer@123` · `meera@demo.com` / `Buddy@123` (buddy + customer) · `admin@example.com` / `Admin@123`
