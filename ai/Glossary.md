@@ -209,6 +209,44 @@ The more useful context you provide, the better the AI's response is likely to b
 
 ---
 
+# Temperature
+
+- Definition
+- Simple Analogy
+- Temperature Scale
+- .NET Example
+- OpenAI Example
+- Interview Questions
+- Common Mistakes
+- Key Takeaways
+
+---
+
+# Top-P (Nucleus Sampling)
+
+- Definition
+- Temperature vs Top-P
+- Real-world Example
+- .NET Example
+- Best Practices
+- Interview Questions
+- Common Mistakes
+- Key Takeaways
+
+---
+
+# System Prompt
+
+- Definition
+- Analogy
+- ChatGPT Example
+- ShoppingBuddy Example
+- Hidden Instructions
+- Interview Questions
+- Key Takeaways
+
+---
+
 # Summary
 
 | Concept | Description |
@@ -216,6 +254,9 @@ The more useful context you provide, the better the AI's response is likely to b
 | Token | Smallest unit of text processed by an LLM |
 | Context Window | Maximum amount of information an AI model can remember during one request |
 | Prompt | The instruction given to an AI model |
+| Temperature | Controls randomness and creativity |
+| Top-P | Controls the candidate token pool |
+| System Prompt | Hidden instructions defining the AI's role and behaviour |
 
 ---
 
@@ -236,6 +277,22 @@ A Context Window is the maximum amount of information an AI model can consider w
 ### Q3. Why is Prompt Engineering important?
 
 Because the quality, clarity, and context of the prompt directly influence the quality of the AI-generated response.
+
+---
+
+### Q4. What is Temperature?
+
+---
+
+### Q5. Difference between Temperature and Top-P?
+
+---
+
+### Q6. What is a System Prompt ?
+
+---
+
+### Q7. Difference between System Prompt and User Prompt?
 
 ---
 
