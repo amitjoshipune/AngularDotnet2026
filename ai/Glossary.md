@@ -1476,6 +1476,483 @@ Every previous message contributes to token usage.
 
 ---
 
+# Context Management
+
+## Definition
+
+**Context Management** is the process of selecting, organizing, and maintaining the information that an AI model uses to generate accurate and relevant responses.
+
+Since every AI model has a limited **Context Window**, applications must carefully decide what information should be sent with each request.
+
+Good Context Management ensures that the AI receives the right information at the right time.
+
+---
+
+## Simple Analogy
+
+Imagine preparing a colleague for an important customer meeting.
+
+Instead of giving them every email ever exchanged, you provide:
+
+- The customer's requirements
+- Previous meeting notes
+- The latest design
+- Current action items
+
+This allows your colleague to answer confidently without being overwhelmed.
+
+AI applications work the same way.
+
+---
+
+## Why It Matters
+
+Poor Context Management can cause the AI to:
+
+- Forget earlier requirements
+- Give inconsistent answers
+- Repeat previous information
+- Produce irrelevant responses
+
+Good Context Management helps the AI:
+
+- Understand the user's intent
+- Remember important details
+- Ignore unnecessary information
+- Produce more accurate responses
+
+---
+
+## What Typically Forms the Context?
+
+A modern AI application may include:
+
+- System Prompt
+- User Prompt
+- Previous Assistant Messages
+- Conversation History
+- Retrieved documents (RAG)
+- Source code
+- Database results
+- User profile
+- Application state
+
+The application decides what to include before sending the request to the model.
+
+---
+
+## ShoppingBuddy Example
+
+Suppose the user asks:
+
+```text
+Find grocery shopping buddies near Baner.
+```
+
+The application may send:
+
+- System Prompt
+- User Prompt
+- User's location
+- Available buddies
+- Online status
+- User preferences
+
+It does **not** send the entire database.
+
+Only relevant information is included.
+
+---
+
+## .NET Example
+
+Imagine your AI assistant helps developers understand the ShoppingBuddy project.
+
+Instead of sending the entire repository, your ASP.NET Core application sends only:
+
+- ProductController.cs
+- ProductService.cs
+- ProductRepository.cs
+- DTOs
+- appsettings.json
+
+This reduces token usage while improving response quality.
+
+---
+
+## Best Practices
+
+- Send only relevant information.
+- Remove duplicate content.
+- Summarize long conversations.
+- Retrieve documents only when needed (RAG).
+- Keep prompts focused.
+
+---
+
+## Interview Questions
+
+### Q1. What is Context Management?
+
+Context Management is the process of selecting and organizing the information provided to an AI model.
+
+---
+
+### Q2. Why is Context Management important?
+
+Because AI models have limited Context Windows and cannot process unlimited information.
+
+---
+
+### Q3. Who performs Context Management?
+
+Usually the application developer or AI framework before calling the LLM.
+
+---
+
+## Common Mistakes
+
+❌ Sending the entire database.
+
+❌ Sending every source code file.
+
+❌ Including unrelated conversation history.
+
+❌ Ignoring token limits.
+
+---
+
+## Key Takeaways
+
+- Context Management improves response quality.
+- Only relevant information should be included.
+- Good Context Management reduces token usage.
+- RAG is commonly used as part of Context Management.
+
+---
+
+# Token Usage
+
+## Definition
+
+**Token Usage** refers to the number of tokens consumed by an AI request and its corresponding response.
+
+Every interaction with an LLM consumes tokens.
+
+Token usage directly affects:
+
+- Cost
+- Performance
+- Context Window usage
+- Response length
+
+---
+
+## What Consumes Tokens?
+
+Tokens are consumed by:
+
+- System Prompt
+- User Prompt
+- Assistant Messages
+- Conversation History
+- Retrieved documents
+- Source code
+- The AI's generated response
+
+Everything sent to or returned from the model contributes to token usage.
+
+---
+
+## Why It Matters
+
+Understanding token usage helps developers:
+
+- Reduce API costs
+- Improve performance
+- Stay within Context Window limits
+- Build scalable AI applications
+
+---
+
+## ShoppingBuddy Example
+
+Suppose a user asks:
+
+```text
+Find shopping buddies near Pune.
+```
+
+The application sends:
+
+- System Prompt
+- User Prompt
+- Five buddy profiles
+
+If instead it sends all 50,000 users in the database, token usage increases dramatically.
+
+---
+
+## .NET Example
+
+Instead of sending:
+
+```
+Entire Solution
+```
+
+Send only:
+
+- ProductController.cs
+- ProductService.cs
+- ProductRepository.cs
+
+This reduces token consumption while preserving useful context.
+
+---
+
+## Cost Example
+
+Imagine:
+
+Input
+
+```
+1500 tokens
+```
+
+Output
+
+```
+500 tokens
+```
+
+Total token usage
+
+```
+2000 tokens
+```
+
+Most commercial AI providers charge based on:
+
+- Input tokens
+- Output tokens
+
+---
+
+## Best Practices
+
+- Keep prompts concise.
+- Send only relevant files.
+- Summarize long conversations.
+- Remove duplicate information.
+- Cache repeated content when possible.
+
+---
+
+## Interview Questions
+
+### Q1. What consumes tokens?
+
+Both input and output consume tokens.
+
+---
+
+### Q2. Why is token usage important?
+
+Because it affects cost, performance, and Context Window usage.
+
+---
+
+### Q3. Do AI responses consume tokens?
+
+Yes.
+
+Generated responses also consume tokens.
+
+---
+
+## Common Mistakes
+
+❌ Assuming only prompts consume tokens.
+
+❌ Sending unnecessary documents.
+
+❌ Ignoring API costs.
+
+---
+
+## Key Takeaways
+
+- Every request consumes tokens.
+- Every response consumes tokens.
+- Lower token usage reduces cost.
+- Efficient prompts improve scalability.
+
+---
+
+# Inference
+
+## Definition
+
+**Inference** is the process of generating a response using a trained AI model.
+
+During inference, the model **does not learn anything new**.
+
+Instead, it uses its existing knowledge, together with the provided context, to predict the most appropriate next token until the response is complete.
+
+Inference is what happens every time you press **Send** in ChatGPT or any AI application.
+
+---
+
+## Simple Analogy
+
+Imagine an experienced software architect.
+
+When asked:
+
+> How should I design this API?
+
+The architect does not go back to university and study again.
+
+Instead, they use their existing knowledge and experience to answer.
+
+LLMs work in a similar way during inference.
+
+---
+
+## What Happens During Inference?
+
+A simplified flow is:
+
+```text
+User Prompt
+        │
+        ▼
+System Prompt
+        │
+        ▼
+Conversation History
+        │
+        ▼
+Context Management
+        │
+        ▼
+LLM
+        │
+Predict Next Token
+        │
+Predict Next Token
+        │
+Predict Next Token
+        │
+...
+        │
+        ▼
+Assistant Message
+```
+
+The model predicts one token at a time until the response is complete.
+
+---
+
+## ShoppingBuddy Example
+
+User:
+
+```text
+Find shopping buddies near Kothrud.
+```
+
+The application:
+
+- Builds the context
+- Sends the request to the LLM
+
+The LLM performs inference and returns:
+
+```text
+I found four shopping buddies near Kothrud who are currently online...
+```
+
+---
+
+## .NET Example
+
+An ASP.NET Core API receives:
+
+```http
+POST /api/chat
+```
+
+The backend:
+
+- Creates the System Prompt
+- Adds the User Prompt
+- Adds conversation history
+- Calls Azure OpenAI
+
+Azure OpenAI performs inference and returns the Assistant Message.
+
+---
+
+## Important Difference
+
+### Training
+
+The AI learns from enormous datasets.
+
+This happens once during model development.
+
+### Inference
+
+The trained model answers user questions.
+
+No new learning takes place.
+
+---
+
+## Interview Questions
+
+### Q1. What is inference?
+
+Inference is the process of generating responses using a trained AI model.
+
+---
+
+### Q2. Does the model learn during inference?
+
+No.
+
+It only uses previously learned knowledge together with the current context.
+
+---
+
+### Q3. What does the model predict during inference?
+
+It predicts the most probable next token repeatedly until the response is complete.
+
+---
+
+## Common Mistakes
+
+❌ Thinking the AI learns from every conversation.
+
+❌ Confusing training with inference.
+
+❌ Assuming the model searches the internet before every response.
+
+---
+
+## Key Takeaways
+
+- Inference generates responses.
+- The model predicts one token at a time.
+- No learning occurs during inference.
+- Every AI chat application performs inference whenever the user sends a request.
+
+---
+
 # Summary
 
 | Concept | Description |
