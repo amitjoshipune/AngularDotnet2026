@@ -1,4 +1,4 @@
-# AI Glossary
+﻿# AI Glossary
 
 > This document contains important AI concepts that I am learning as part of my AI-assisted .NET Developer journey.
 
@@ -8,15 +8,61 @@
 
 ## Definition
 
-A **Token** is the smallest unit of text that a Large Language Model (LLM) processes. A token may represent:
+A **Token** is the smallest unit of text that a Large Language Model (LLM) processes.
+
+Unlike humans, an AI model does **not** read complete sentences. Instead, it breaks the input into smaller pieces called **tokens** and processes them one by one.
+
+A token may represent:
 
 - A complete word
 - Part of a word
 - A punctuation mark
-- A special character
 - A number
+- A special character
+- A space or formatting symbol (depending on the tokenizer)
 
-Unlike humans, an LLM does not read complete sentences. Instead, it processes input one token at a time.
+Different AI models may tokenize the same text differently.
+
+---
+
+## Simple Analogy
+
+Imagine giving a child a box of LEGO bricks.
+
+The child does not receive a finished castle.
+
+Instead, the castle is built one LEGO brick at a time.
+
+Similarly, an LLM does not process an entire paragraph at once.
+
+It first breaks the paragraph into tokens and then reasons over those tokens.
+
+---
+
+## Why It Matters
+
+Everything sent to an AI model is measured in tokens.
+
+This includes:
+
+- Your prompt
+- Previous conversation history
+- Source code
+- Documentation
+- PDFs
+- SQL scripts
+- Configuration files
+- The AI's response
+
+Every model has a maximum number of tokens it can process in a single request. This limit is known as the **Context Window**.
+
+If the combined input and expected output exceed this limit:
+
+- Older information may be discarded.
+- Important context may be lost.
+- Responses may become incomplete or inconsistent.
+
+Understanding tokens helps developers write better prompts and manage large codebases more effectively.
 
 ---
 
@@ -28,9 +74,7 @@ Consider the following SQL statement:
 SELECT * FROM Users;
 ```
 
-As humans, we think of this as:
-
-- One SQL statement
+Humans see this as a single SQL statement.
 
 An LLM processes it more like:
 
@@ -42,41 +86,74 @@ Users
 ;
 ```
 
-Each of these pieces is treated as one or more **tokens**.
+Each piece becomes one or more tokens.
 
 ---
 
-## Why Should a .NET Developer Care?
+## .NET Example
 
-Suppose you paste the following into ChatGPT:
+Suppose you ask ChatGPT to review the following files:
 
 - Program.cs
-- Startup.cs
 - ProductController.cs
+- ProductService.cs
 - ProductRepository.cs
-- SQL Scripts
-- Configuration Files
+- appsettings.json
+- SQL scripts
+- README.md
 
-All of this consumes tokens.
+Every file consumes tokens.
 
-Every AI model has a maximum number of tokens that it can process at one time. This limit is called the **Context Window**.
+Large enterprise projects may contain hundreds of thousands of lines of code.
 
-If your input exceeds that limit:
-
-- Earlier information may be ignored.
-- The model may lose important context.
-- Responses may become incomplete or inaccurate.
-
-Understanding tokens helps developers write better prompts and manage large codebases more effectively.
+Since the Context Window is limited, developers often need to provide only the most relevant files.
 
 ---
 
-## Key Points
+## Practical Tips
 
-- Every prompt consumes tokens.
-- Every AI response consumes tokens.
-- Source code also consumes tokens.
-- Large projects require careful token management.
+- Keep prompts concise.
+- Remove unnecessary text.
+- Send only relevant source files.
+- Split very large problems into multiple prompts.
+- Be aware that both your input and the AI's output consume tokens.
+
+---
+
+## Interview Questions
+
+### Q1. What is a Token?
+
+A Token is the smallest unit of text processed by an LLM. Tokens may represent words, parts of words, punctuation, numbers, or symbols.
+
+### Q2. Why are Tokens important?
+
+Because every AI model has a limit on the number of tokens it can process in a single request.
+
+### Q3. Does one word always equal one token?
+
+No.
+
+A word may become one token or multiple tokens depending on the tokenizer.
+
+---
+
+## Common Mistakes
+
+❌ Thinking one word always equals one token.
+
+❌ Forgetting that AI responses also consume tokens.
+
+❌ Sending an entire source code repository when only a few files are required.
+
+---
+
+## Key Takeaways
+
+- Tokens are the basic units processed by an LLM.
+- Every prompt and response consumes tokens.
+- Source code, documentation, and chat history all consume tokens.
+- Token limits directly affect prompt design.
 
 ---
 
@@ -84,40 +161,51 @@ Understanding tokens helps developers write better prompts and manage large code
 
 ## Definition
 
-The **Context Window** is the maximum amount of information that an AI model can remember and use during a single conversation or request.
+The **Context Window** is the maximum amount of information an AI model can consider while generating a response.
 
-Think of it as the AI model's short-term working memory.
+Think of it as the model's **working memory** during a conversation.
+
+Everything inside the Context Window is available for reasoning.
+
+Everything outside it is forgotten unless provided again.
 
 ---
 
-## Real-World Analogy
+## Simple Analogy
 
 Imagine explaining a software project to a new developer.
 
-If they remember only the last five minutes of the discussion, you constantly need to repeat yourself.
+If they remember only the last five minutes of the discussion, you constantly repeat yourself.
 
 If they remember the last two hours, they understand the complete picture.
 
-Similarly, a larger Context Window allows an AI model to reason over much larger amounts of information.
+A larger Context Window allows the AI to reason over more information.
 
 ---
 
-## Why Is It Important?
+## Why It Matters
 
-A larger Context Window enables the AI model to process:
+A larger Context Window allows the model to understand:
 
-- Large source code repositories
-- Long technical documents
-- Multiple API files
-- Architecture documents
+- Large codebases
+- Multiple APIs
+- Long architecture documents
+- Product requirements
+- Design discussions
 - Long conversations
-- Requirement specifications
+
+Without sufficient context, the AI may:
+
+- Forget earlier requirements.
+- Produce inconsistent answers.
+- Repeat previous explanations.
+- Miss relationships between files.
 
 ---
 
-## Example
+## Real-world Example
 
-Instead of sending:
+Instead of sending only:
 
 - ProductController.cs
 
@@ -126,19 +214,76 @@ You can send:
 - ProductController.cs
 - ProductService.cs
 - ProductRepository.cs
+- ProductDto.cs
 - appsettings.json
-- SQL Script
 - README.md
+- SQL scripts
 
-The AI can understand how all these files relate to one another.
+The AI can now understand how these files work together.
 
 ---
 
-## Key Points
+## .NET Example
 
-- Larger Context Window = More information remembered.
-- Better context usually produces better answers.
-- Very large projects may still need to be broken into smaller parts.
+Imagine asking ChatGPT:
+
+> Review my ShoppingBuddy project.
+
+If only one controller is provided, the AI cannot understand:
+
+- Dependency Injection
+- Repository Pattern
+- Authentication
+- Database schema
+- Configuration
+
+Providing the related files gives the model enough context to generate better recommendations.
+
+---
+
+## Practical Tips
+
+- Include only relevant files.
+- Keep conversations focused.
+- Start a new chat for unrelated topics.
+- Summarize long discussions when necessary.
+
+---
+
+## Interview Questions
+
+### Q1. What is a Context Window?
+
+The maximum amount of information an AI model can consider while generating a response.
+
+### Q2. Why is a larger Context Window useful?
+
+Because it enables the model to reason over larger codebases, longer documents, and more complex conversations.
+
+### Q3. Can a larger Context Window replace good prompts?
+
+No.
+
+A larger Context Window helps, but clear prompts are still essential.
+
+---
+
+## Common Mistakes
+
+❌ Assuming the AI remembers everything forever.
+
+❌ Including unnecessary files.
+
+❌ Mixing unrelated topics into one conversation.
+
+---
+
+## Key Takeaways
+
+- Context Window is the model's working memory.
+- Larger Context Windows improve reasoning.
+- More context generally produces better answers.
+- Good prompt design is still important.
 
 ---
 
@@ -146,15 +291,40 @@ The AI can understand how all these files relate to one another.
 
 ## Definition
 
-A **Prompt** is the instruction or question given to an AI model.
+A **Prompt** is the instruction, question, or request given to an AI model.
 
-The quality of the prompt directly affects the quality of the response.
+The quality of the prompt directly influences the quality of the response.
+
+A good prompt tells the model:
+
+- What to do
+- How to do it
+- The desired output format
+- Any constraints or context
+
+---
+
+## Simple Analogy
+
+Imagine asking a taxi driver:
+
+> Drive.
+
+They don't know where you want to go.
+
+Now imagine saying:
+
+> Drive me to Pune Railway Station using the fastest route and avoid toll roads.
+
+The second instruction is much clearer.
+
+AI prompts work the same way.
 
 ---
 
 ## Poor Prompt
 
-```
+```text
 Explain JWT.
 ```
 
@@ -162,20 +332,48 @@ Explain JWT.
 
 ## Better Prompt
 
-```
+```text
 Explain JWT as if I am a Senior .NET Backend Engineer preparing for technical interviews.
 
 Include:
 
 - JWT structure
 - Authentication flow
-- Advantages
-- Security considerations
+- ASP.NET Core implementation
+- Security best practices
 - Common interview questions
-- Practical ASP.NET Core examples
+- Practical code examples
 ```
 
-The second prompt provides much more context, allowing the AI to generate a more useful response.
+The second prompt provides context, audience, and expected output.
+
+---
+
+## .NET Example
+
+Poor Prompt:
+
+```text
+Generate API code.
+```
+
+Better Prompt:
+
+```text
+Create a production-ready ASP.NET Core 8 Web API using:
+
+- Clean Architecture
+- Dependency Injection
+- Repository Pattern
+- Entity Framework Core
+- SQL Server
+- Swagger
+- JWT Authentication
+- Global Exception Handling
+- Logging using Serilog
+```
+
+The second prompt produces significantly better results.
 
 ---
 
@@ -187,25 +385,56 @@ A good prompt should be:
 - Specific
 - Context-aware
 - Goal-oriented
+- Complete
 - Easy to understand
 
 ---
 
-## Practical Tip
+## Practical Tips
 
-Instead of asking:
+- Describe the audience.
+- Specify the programming language.
+- Mention the framework version.
+- Request the desired output format.
+- Include constraints.
+- Ask for explanations when learning.
 
-```
-Write code.
-```
+---
 
-Ask:
+## Interview Questions
 
-```
-Create a production-ready ASP.NET Core 8 Web API following Clean Architecture, using Dependency Injection, Repository Pattern, Entity Framework Core, SQL Server, Swagger, JWT Authentication, and proper exception handling.
-```
+### Q1. What is a Prompt?
 
-The more useful context you provide, the better the AI's response is likely to be.
+A Prompt is the instruction or request provided to an AI model.
+
+### Q2. Why is Prompt Engineering important?
+
+Because better prompts generally produce better responses.
+
+### Q3. What makes a good prompt?
+
+A good prompt is clear, specific, contextual, and goal-oriented.
+
+---
+
+## Common Mistakes
+
+❌ Writing vague prompts.
+
+❌ Forgetting to provide context.
+
+❌ Expecting the AI to guess requirements.
+
+❌ Asking multiple unrelated questions in one prompt.
+
+---
+
+## Key Takeaways
+
+- A Prompt is the primary way humans communicate with an AI model.
+- Better prompts usually produce better responses.
+- Context significantly improves AI output.
+- Prompt Engineering is an essential skill for AI-assisted software development.
 
 ---
 
