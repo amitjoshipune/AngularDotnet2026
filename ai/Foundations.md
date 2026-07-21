@@ -1,4 +1,4 @@
-# AI Foundations
+﻿# AI Foundations
 
 ## 1. What is AI?
 
@@ -31,3 +31,66 @@
 ## 8. What is an Agents?
 
 (To be completed)
+
+---
+Artificial Intelligence
+
+↓
+
+Machine Learning
+
+↓
+
+Deep Learning
+
+↓
+
+Generative AI
+
+↓
+
+Large Language Models
+
+↓
+
+Prompt Engineering
+
+↓
+
+Tokens
+
+↓
+
+Context Window
+
+↓
+
+Embeddings
+
+↓
+
+Vector Database
+
+↓
+
+Retrieval
+
+↓
+
+RAG
+
+↓
+
+Function Calling
+
+↓
+
+MCP
+
+↓
+
+AI Agents
+
+↓
+
+Enterprise AI Applications

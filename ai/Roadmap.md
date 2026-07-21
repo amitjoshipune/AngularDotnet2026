@@ -1,23 +1,38 @@
-Phase 1
+## Phase 1
 
-[x] AI
-[x] ML
+[x] Artificial Intelligence
+
+[x] Machine Learning
+
 [x] Deep Learning
-[x] LLM
-[x] Prompt
+
+[x] Generative AI
+
+[x] Large Language Models
+
 [x] Token
+
 [x] Context Window
 
-[ ] Temperature
-[ ] Top-P
-[ ] System Prompt
+[x] Prompt
+
+[x] Temperature
+
+[x] Top-P
+
+[x] System Prompt
+
 [ ] User Prompt
+
 [ ] Assistant Message
+
+[ ] Conversation History
+
 [ ] Inference
 
 -----------------------------------
 
-Phase 2
+## Phase 2
 
 [ ] Embeddings
 [ ] Vector Database
@@ -27,7 +42,7 @@ Phase 2
 
 -----------------------------------
 
-Phase 3
+## Phase 3
 
 [ ] Function Calling
 [ ] MCP
