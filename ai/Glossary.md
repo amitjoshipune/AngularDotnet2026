@@ -440,39 +440,567 @@ A good prompt is clear, specific, contextual, and goal-oriented.
 
 # Temperature
 
-- Definition
-- Simple Analogy
-- Temperature Scale
-- .NET Example
-- OpenAI Example
-- Interview Questions
-- Common Mistakes
-- Key Takeaways
+## Definition
+
+**Temperature** is a parameter that controls how **creative, random, or deterministic** an AI model's response should be.
+
+It does **not** control the intelligence, knowledge, or accuracy of the model.
+
+Think of Temperature as a **Creativity Knob**.
+
+- Lower Temperature → More predictable responses
+- Higher Temperature → More creative responses
+
+---
+
+## Simple Analogy
+
+Imagine asking 100 students:
+
+> What is 2 + 2?
+
+Almost everyone answers:
+
+```
+4
+```
+
+Now ask:
+
+> Write a story about a dragon.
+
+Some students write similar stories.
+
+Some create completely different worlds.
+
+Temperature controls how adventurous the AI becomes when choosing its next words.
+
+---
+
+## Why It Matters
+
+Choosing the right Temperature improves the quality of AI responses.
+
+Examples:
+
+Low Temperature is useful for:
+
+- Code generation
+- SQL queries
+- JSON
+- APIs
+- Mathematics
+- Technical documentation
+
+Higher Temperature is useful for:
+
+- Brainstorming
+- Story writing
+- Marketing
+- Product ideas
+- Creative writing
+
+---
+
+## Temperature Scale
+
+### Temperature = 0
+
+Very deterministic
+
+Almost identical answers every time.
+
+Best for:
+
+- Coding
+- SQL
+- Mathematics
+- APIs
+- JSON generation
+- Unit tests
+
+--------------------------------------
+
+### Temperature = 0.2
+
+Very low creativity
+
+Suitable for:
+
+- Business emails
+- Documentation
+- Architecture discussions
+- Technical writing
+
+--------------------------------------
+
+### Temperature = 0.5
+
+Balanced
+
+Suitable for:
+
+- Learning
+- Tutorials
+- Chat assistants
+- Summaries
+
+--------------------------------------
+
+### Temperature = 0.7
+
+Creative
+
+Suitable for:
+
+- Brainstorming
+- Product names
+- UI ideas
+- Design discussions
+
+--------------------------------------
+
+### Temperature = 1.0+
+
+Highly creative
+
+Suitable for:
+
+- Stories
+- Poetry
+- Role-playing
+- Idea generation
+
+May become less consistent.
+
+---
+
+## Real-world Example
+
+Prompt:
+
+```
+Write a C# method to reverse a string.
+```
+
+Temperature = 0
+
+The generated code will usually be nearly identical every time.
+
+--------------------------------------
+
+Prompt:
+
+```
+Suggest five AI startup ideas.
+```
+
+Temperature = 1
+
+Each execution may produce different ideas.
+
+---
+
+## .NET Example
+
+Suppose your ASP.NET Core API exposes:
+
+```
+POST /api/chat
+```
+
+Recommended values:
+
+Coding Assistant
+
+```
+Temperature = 0.1
+```
+
+Interview Coach
+
+```
+Temperature = 0.3
+```
+
+Architecture Assistant
+
+```
+Temperature = 0.5
+```
+
+Marketing Assistant
+
+```
+Temperature = 0.8
+```
+
+---
+
+## OpenAI Example
+
+```csharp
+temperature = 0.2
+```
+
+Produces deterministic technical responses.
+
+---
+
+## Interview Questions
+
+### Q1. What does Temperature control?
+
+Temperature controls the randomness and creativity of AI responses.
+
+---
+
+### Q2. Does Temperature increase intelligence?
+
+No.
+
+It only changes how the model selects words.
+
+---
+
+### Q3. Which Temperature is preferred for code generation?
+
+Usually between **0 and 0.2**.
+
+---
+
+## Common Mistakes
+
+❌ Thinking higher Temperature means smarter AI.
+
+❌ Using Temperature 1.0 for SQL generation.
+
+❌ Using Temperature 0 for brainstorming.
+
+---
+
+## Key Takeaways
+
+- Temperature controls creativity.
+- Lower values produce more predictable output.
+- Higher values produce more diverse output.
+- Coding assistants usually use low Temperature.
 
 ---
 
 # Top-P (Nucleus Sampling)
 
-- Definition
-- Temperature vs Top-P
-- Real-world Example
-- .NET Example
-- Best Practices
-- Interview Questions
-- Common Mistakes
-- Key Takeaways
+## Definition
+
+**Top-P** (Top Probability), also called **Nucleus Sampling**, controls **how many candidate words the AI considers before selecting the next token**.
+
+Unlike Temperature, which changes randomness, Top-P changes the **size of the candidate pool**.
+
+---
+
+## Simple Analogy
+
+Imagine a classroom.
+
+The teacher asks:
+
+> Name a programming language.
+
+If Top-P is very low,
+
+the AI considers only the most likely answers:
+
+- C#
+- Java
+- Python
+
+If Top-P is high,
+
+the AI may also consider:
+
+- Kotlin
+- Rust
+- Elixir
+- Zig
+- Haskell
+
+A larger candidate pool increases diversity.
+
+---
+
+## Why It Matters
+
+Top-P controls how broad the AI's vocabulary selection becomes.
+
+Lower Top-P
+
+- Safer
+- More predictable
+- Less variety
+
+Higher Top-P
+
+- More variety
+- More creativity
+- Slightly higher chance of unusual outputs
+
+---
+
+## Temperature vs Top-P
+
+| Temperature | Top-P |
+|--------------|-------|
+| Controls randomness | Controls candidate pool |
+| Creativity knob | Vocabulary selection |
+| Changes probability distribution | Filters possible next tokens |
+| Most commonly adjusted | Usually left at default |
+
+---
+
+## Real-world Example
+
+Prompt
+
+```
+Suggest names for an AI startup.
+```
+
+Top-P = 0.3
+
+Mostly common names.
+
+--------------------------------------
+
+Top-P = 0.95
+
+Much more diverse suggestions.
+
+---
+
+## .NET Example
+
+A Banking API assistant
+
+```
+Temperature = 0.2
+
+Top-P = 0.9
+```
+
+Produces deterministic answers while still considering high-probability vocabulary.
+
+---
+
+## Best Practices
+
+Most applications change either:
+
+- Temperature
+
+OR
+
+- Top-P
+
+Not both.
+
+OpenAI also recommends adjusting one before experimenting with the other.
+
+---
+
+## Interview Questions
+
+### Q1. What is Top-P?
+
+Top-P controls the size of the candidate token pool.
+
+---
+
+### Q2. Difference between Temperature and Top-P?
+
+Temperature controls randomness.
+
+Top-P controls which candidate tokens are considered.
+
+---
+
+### Q3. Should both always be changed together?
+
+No.
+
+Usually only one parameter is adjusted.
+
+---
+
+## Common Mistakes
+
+❌ Confusing Top-P with Temperature.
+
+❌ Believing Top-P changes intelligence.
+
+❌ Setting both parameters randomly.
+
+---
+
+## Key Takeaways
+
+- Top-P controls candidate selection.
+- Temperature controls randomness.
+- Most applications modify only one of them.
+- Coding assistants often use a low Temperature while keeping Top-P near its default.
 
 ---
 
 # System Prompt
 
-- Definition
-- Analogy
-- ChatGPT Example
-- ShoppingBuddy Example
-- Hidden Instructions
-- Interview Questions
-- Key Takeaways
+## Definition
+
+A **System Prompt** is a hidden instruction provided to the AI model by the application developer before the user starts interacting with it.
+
+It defines the AI's:
+
+- Role
+- Behaviour
+- Tone
+- Goals
+- Restrictions
+- Response style
+
+Users normally cannot see the System Prompt.
+
+---
+
+## Simple Analogy
+
+Imagine joining a new company.
+
+Before speaking with customers, your manager gives you instructions:
+
+- Be polite.
+- Never disclose confidential information.
+- Help customers solve problems.
+- Escalate billing issues.
+- Follow company policies.
+
+Those manager instructions are like the **System Prompt**.
+
+Customer questions are like **User Prompts**.
+
+---
+
+## Why It Matters
+
+The System Prompt provides consistent behaviour across conversations.
+
+Without it, the AI has no predefined role.
+
+With it, the AI knows whether it should behave as:
+
+- Software Architect
+- Coding Assistant
+- Medical Assistant
+- Travel Planner
+- Customer Support Agent
+
+---
+
+## ShoppingBuddy Example
+
+Example System Prompt
+
+```text
+You are ShoppingBuddy AI Assistant.
+
+Your goal is to help users find suitable shopping buddies.
+
+Rules:
+
+- Prefer buddies who are currently online.
+- If none are online, suggest recently active buddies.
+- Match users by location first.
+- Then by interests.
+- Then by age group.
+- Show buddy ratings if available.
+- Never recommend blocked or inactive users.
+- If no suitable buddy exists, politely explain why and suggest increasing the search radius.
+```
+
+---
+
+## ChatGPT Example
+
+A simplified System Prompt might be:
+
+```text
+You are a helpful AI assistant.
+
+Provide accurate, clear, and safe answers.
+
+If you do not know something, say so instead of inventing information.
+```
+
+---
+
+## .NET Example
+
+Imagine building an ASP.NET Core AI application.
+
+Your backend sends this System Prompt:
+
+```text
+You are an Interview Coach.
+
+Help Senior .NET Developers prepare for technical interviews.
+
+Explain concepts clearly.
+
+Provide production-quality C# examples.
+
+End every lesson with three interview questions.
+```
+
+Every user now receives responses following those rules.
+
+---
+
+## Interview Questions
+
+### Q1. What is a System Prompt?
+
+A hidden instruction that defines the AI's behaviour before the user begins interacting with it.
+
+---
+
+### Q2. Who usually writes the System Prompt?
+
+The application developer or AI application designer.
+
+---
+
+### Q3. Can users normally see the System Prompt?
+
+No.
+
+It is typically hidden from end users.
+
+---
+
+## Common Mistakes
+
+❌ Assuming the System Prompt is the same as a User Prompt.
+
+❌ Believing users usually write the System Prompt.
+
+❌ Thinking the System Prompt guarantees perfect behaviour.
+
+---
+
+## Key Takeaways
+
+- The System Prompt defines the AI's role.
+- It is written by the application developer.
+- It is usually hidden from users.
+- It helps produce consistent responses across conversations.
+- Enterprise AI applications rely heavily on well-designed System Prompts.
 
 ---
 
